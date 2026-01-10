@@ -1,8 +1,10 @@
+import 'package:diato_ai/features/scanner/presentation/scanner_screen.dart';
 import 'package:diato_ai/features/shared/widgets/custom_bottom_app_bar.dart';
 import 'package:diato_ai/utils/extensions/context_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class AppLayout extends StatefulWidget {
   final StatefulNavigationShell child;
@@ -30,7 +32,7 @@ class _AppLayoutState extends State<AppLayout> {
               child: Scaffold(
                 backgroundColor: Colors.transparent,
                 floatingActionButton: FloatingActionButton(
-                  onPressed: () {},
+                  onPressed: _onScanTapped,
                   shape: const CircleBorder(),
                   backgroundColor: context.colorScheme.tertiary,
                   foregroundColor: context.colorScheme.primary,
@@ -104,6 +106,69 @@ class _AppLayoutState extends State<AppLayout> {
       index,
       initialLocation: index == widget.child.currentIndex,
     );
+  }
+
+  Future<void> _onScanTapped() async {
+    // Check camera permission
+    PermissionStatus status = await Permission.camera.status;
+
+    if (status.isGranted) {
+      // Permission already granted, navigate to scanner
+      if (mounted) {
+        context.pushNamed(ScannerScreen.routeName);
+      }
+      return;
+    }
+
+    // Request permission if not granted
+    status = await Permission.camera.request();
+
+    if (status.isGranted) {
+      // Permission granted, navigate to scanner
+      if (mounted) {
+        context.pushNamed(ScannerScreen.routeName);
+      }
+    } else if (status.isDenied) {
+      // Permission denied
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Camera permission is required to scan diatoms'),
+            action: SnackBarAction(
+              label: 'Retry',
+              onPressed: _onScanTapped,
+            ),
+          ),
+        );
+      }
+    } else if (status.isPermanentlyDenied) {
+      // Permission permanently denied, open app settings
+      if (mounted) {
+        final shouldOpenSettings = await showDialog<bool>(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text('Camera Permission Required'),
+            content: Text(
+              'Camera access is required to scan diatoms. Please enable it in app settings.',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(context, true),
+                child: Text('Open Settings'),
+              ),
+            ],
+          ),
+        );
+
+        if (shouldOpenSettings == true) {
+          await openAppSettings();
+        }
+      }
+    }
   }
 }
 
