@@ -56,8 +56,7 @@ class _AppLayoutState extends State<AppLayout> {
                     elevation: 8,
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 8.0,
-                        vertical: 12,
+                        vertical: 4,
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -124,8 +123,8 @@ class _NavBarItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 38,
-      width: 38,
+      height: 48,
+      width: 48,
       child: Material(
         clipBehavior: Clip.hardEdge,
         color: Colors.transparent,

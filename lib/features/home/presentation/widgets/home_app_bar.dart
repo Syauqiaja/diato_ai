@@ -1,9 +1,7 @@
-import 'package:diato_ai/features/shared/actionable/app_button.dart';
 import 'package:diato_ai/features/shared/widgets/profile_button.dart';
 import 'package:diato_ai/features/shared/widgets/spacings.dart';
 import 'package:diato_ai/utils/extensions/context_extensions.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../core/assets/assets.dart';
 
