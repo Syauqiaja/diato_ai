@@ -1,4 +1,5 @@
 import 'package:diato_ai/features/shared/actionable/app_button.dart';
+import 'package:diato_ai/features/shared/widgets/profile_button.dart';
 import 'package:diato_ai/features/shared/widgets/spacings.dart';
 import 'package:diato_ai/utils/extensions/context_extensions.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +21,7 @@ class _HomeAppBarState extends State<HomeAppBar> {
   double _contentOpacity = 1.0;
 
   final double expandedHeight = 450.0;
-  final double collapsedHeight = 55.0;
+  final double collapsedHeight = 64.0;
 
   ScrollController get _scrollController => widget._scrollController;
 
@@ -71,14 +72,20 @@ class _HomeAppBarState extends State<HomeAppBar> {
       shadowColor: Colors.transparent,
       title: Opacity(
         opacity: _titleOpacity,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Row(
           children: [
-            Text("Diato AI"),
-            Text(
-              "We owe so much to diatoms!",
-              style: context.textTheme.bodySmall?.copyWith(color: Colors.white),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text("Diato AI"),
+                Text(
+                  "We owe so much to diatoms!",
+                  style: context.textTheme.bodySmall?.copyWith(color: Colors.white),
+                ),
+              ],
             ),
+            Spacer(),
+            ProfileButton()
           ],
         ),
       ),
@@ -123,18 +130,7 @@ class _HomeAppBarState extends State<HomeAppBar> {
                               mainAxisAlignment: MainAxisAlignment.end,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                AppButton(
-                                  backgroundColor: AppButtonColorType.white,
-                                  foregroundColor: AppButtonColorType.primary,
-                                  onPressed: () {},
-                                  child: Row(
-                                    children: [
-                                      FaIcon(FontAwesomeIcons.userGraduate, size: 20),
-                                      hSpace(8),
-                                      Text("Login"),
-                                    ],
-                                  ),
-                                ),
+                                ProfileButton()
                               ],
                             ),
                           ),
