@@ -1,6 +1,5 @@
 import 'package:diato_ai/features/home/presentation/widgets/home_app_bar.dart';
 import 'package:diato_ai/features/home/presentation/widgets/home_body_section.dart';
-import 'package:diato_ai/utils/extensions/container_to_box_extension.dart';
 import 'package:diato_ai/utils/extensions/context_extensions.dart';
 import 'package:flutter/material.dart';
 

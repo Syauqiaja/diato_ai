@@ -1,11 +1,15 @@
+import 'package:diato_ai/features/shared/actionable/app_button.dart';
+import 'package:diato_ai/features/shared/widgets/spacings.dart';
 import 'package:diato_ai/utils/extensions/context_extensions.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../core/assets/assets.dart';
 
 class HomeAppBar extends StatefulWidget {
   final ScrollController _scrollController;
-  const HomeAppBar({super.key, required ScrollController scrollController}) : _scrollController = scrollController;
+  const HomeAppBar({super.key, required ScrollController scrollController})
+    : _scrollController = scrollController;
 
   @override
   State<HomeAppBar> createState() => _HomeAppBarState();
@@ -55,116 +59,134 @@ class _HomeAppBarState extends State<HomeAppBar> {
       _contentOpacity = (1 - opacity).clamp(0.0, 1.0);
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return SliverAppBar(
-            pinned: true,
-            expandedHeight: 520.0,
-            collapsedHeight: collapsedHeight,
-            leadingWidth: 0,
-            elevation: 0,
-            shadowColor: Colors.transparent,
-            title: Opacity(
-              opacity: _titleOpacity,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("Diato AI"),
-                  Text(
-                    "We owe so much to diatoms!",
-                    style: context.textTheme.bodySmall?.copyWith(
-                      color: Colors.white,
-                    ),
-                  ),
-                ],
-              ),
+      pinned: true,
+      expandedHeight: 520.0,
+      collapsedHeight: collapsedHeight,
+      leadingWidth: 0,
+      elevation: 0,
+      shadowColor: Colors.transparent,
+      title: Opacity(
+        opacity: _titleOpacity,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text("Diato AI"),
+            Text(
+              "We owe so much to diatoms!",
+              style: context.textTheme.bodySmall?.copyWith(color: Colors.white),
             ),
-            toolbarHeight: 55,
-            centerTitle: false,
-            actionsPadding: EdgeInsets.symmetric(horizontal: 0),
-            flexibleSpace: FlexibleSpaceBar(
-              titlePadding: EdgeInsets.only(top: 32),
-              stretchModes: [
-                StretchMode.blurBackground,
-                StretchMode.fadeTitle,
-                StretchMode.zoomBackground,
-              ],
-              collapseMode: CollapseMode.parallax,
-              centerTitle: false,
-              expandedTitleScale: 1.1,
-              background: Column(
-                children: [
-                  Expanded(
-                    child: Opacity(
-                      opacity: _contentOpacity,
-                      child: Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 32),
-                        child: Stack(
-                          children: [
-                            Container(
-                              height: 300,
-                              padding: const EdgeInsets.all(8.0),
-                              child: Opacity(
-                                opacity: 0.2,
-                                child: Image.asset(Assets.cellBg),
-                              ),
-                            ),
-                            Column(
-                              spacing: 16,
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
+          ],
+        ),
+      ),
+      toolbarHeight: 55,
+      centerTitle: false,
+      actionsPadding: EdgeInsets.symmetric(horizontal: 0),
+      flexibleSpace: FlexibleSpaceBar(
+        titlePadding: EdgeInsets.only(top: 32),
+        stretchModes: [
+          StretchMode.blurBackground,
+          StretchMode.fadeTitle,
+          StretchMode.zoomBackground,
+        ],
+        collapseMode: CollapseMode.parallax,
+        centerTitle: false,
+        expandedTitleScale: 1.1,
+        background: Column(
+          children: [
+            Expanded(
+              child: Opacity(
+                opacity: _contentOpacity,
+                child: Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 32),
+                  child: Stack(
+                    children: [
+                      Container(
+                        height: 300,
+                        padding: const EdgeInsets.all(8.0),
+                        child: Opacity(
+                          opacity: 0.2,
+                          child: Image.asset(Assets.cellBg),
+                        ),
+                      ),
+                      Column(
+                        spacing: 16,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          vSpace(24),
+                          SizedBox(
+                            height: kToolbarHeight,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                SizedBox(height: kToolbarHeight),
-                                _buildTitle(context),
-                                Container(
-                                  margin: EdgeInsets.symmetric(vertical: 16),
-                                  height: 200,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white10,
-                                    borderRadius: BorderRadius.circular(16),
-                                  ),
-                                  clipBehavior: Clip.hardEdge,
-                                  child: Stack(
-                                    alignment: Alignment.center,
+                                AppButton(
+                                  backgroundColor: AppButtonColorType.white,
+                                  foregroundColor: AppButtonColorType.primary,
+                                  onPressed: () {},
+                                  child: Row(
                                     children: [
-                                      Image.asset(
-                                        Assets.diatomi,
-                                        fit: BoxFit.cover,
-                                        width: double.infinity,
-                                      ),
-                                      Text(
-                                        "Diatom",
-                                        style: context.textTheme.displayMedium
-                                            ?.copyWith(color: Colors.white),
-                                      ),
+                                      FaIcon(FontAwesomeIcons.userGraduate, size: 20),
+                                      hSpace(8),
+                                      Text("Login"),
                                     ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 8.0,
-                                  ),
-                                  child: Text(
-                                    "They help us make toothpaste, wall paint, and water filters - and they're responsible for some of the air you're breathing right now!",
-                                    style: context.textTheme.bodyMedium
-                                        ?.copyWith(
-                                          height: 1.1,
-                                          color: Colors.white,
-                                        ),
                                   ),
                                 ),
                               ],
                             ),
-                          ],
-                        ),
+                          ),
+                          _buildTitle(context),
+                          Container(
+                            margin: EdgeInsets.symmetric(vertical: 16),
+                            height: 200,
+                            decoration: BoxDecoration(
+                              color: Colors.white10,
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            clipBehavior: Clip.hardEdge,
+                            child: Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                Image.asset(
+                                  Assets.diatomi,
+                                  fit: BoxFit.cover,
+                                  width: double.infinity,
+                                ),
+                                Text(
+                                  "Diatom",
+                                  style: context.textTheme.displayMedium
+                                      ?.copyWith(color: Colors.white),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8.0,
+                            ),
+                            child: Text(
+                              "They help us make toothpaste, wall paint, and water filters - and they're responsible for some of the air you're breathing right now!",
+                              style: context.textTheme.bodyMedium?.copyWith(
+                                height: 1.1,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
-          );
+          ],
+        ),
+      ),
+    );
   }
-
 
   Widget _buildTitle(BuildContext context) {
     return Padding(
@@ -172,7 +194,6 @@ class _HomeAppBarState extends State<HomeAppBar> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SizedBox(height: 0),
           Text(
             "Welcome to",
             style: context.textTheme.bodyLarge?.copyWith(color: Colors.white),
