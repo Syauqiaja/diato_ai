@@ -20,69 +20,76 @@ class _AppLayoutState extends State<AppLayout> {
       child: Stack(
         children: [
           Positioned.fill(child: widget.child),
-          Scaffold(
-            backgroundColor: Colors.transparent,
-            floatingActionButton: FloatingActionButton(
-              onPressed: () {},
-              shape: const CircleBorder(),
-              backgroundColor: context.colorScheme.tertiary,
-              foregroundColor: context.colorScheme.primary,
-              elevation: 4,
-              child: const FaIcon(FontAwesomeIcons.qrcode, size: 28),
-            ),
-            floatingActionButtonLocation:
-                FloatingActionButtonLocation.centerDocked,
-            bottomNavigationBar: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(32),
-              ),
-              clipBehavior: Clip.hardEdge,
-              margin: const EdgeInsets.only(
-                left: 8,
-                right: 8,
-                bottom: 12,
-                top: 0,
-              ),
-              child: CustomBottomAppBar(
-                shape: const CircularNotchedRectangle(),
-                notchMargin: 8,
-                positionInHorizontal: -8,
-                color: context.colorScheme.primary,
-                elevation: 8,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8.0,
-                    vertical: 12,
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 8,
+            child: Container(
+              height: 64,
+              padding: EdgeInsets.only(top: 12),
+              child: Scaffold(
+                backgroundColor: Colors.transparent,
+                floatingActionButton: FloatingActionButton(
+                  onPressed: () {},
+                  shape: const CircleBorder(),
+                  backgroundColor: context.colorScheme.tertiary,
+                  foregroundColor: context.colorScheme.primary,
+                  elevation: 4,
+                  child: const FaIcon(FontAwesomeIcons.qrcode, size: 28),
+                ),
+                floatingActionButtonLocation:
+                    FloatingActionButtonLocation.centerDocked,
+                bottomNavigationBar: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(32),
                   ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      _NavBarItem(
-                        icon: FontAwesomeIcons.house,
-                        label: 'Home',
-                        isSelected: widget.child.currentIndex == 0,
-                        onTap: () => _onItemTapped(0),
+                  clipBehavior: Clip.hardEdge,
+                  margin: const EdgeInsets.only(
+                    left: 8,
+                    right: 8,
+                  ),
+                  child: CustomBottomAppBar(
+                    shape: const CircularNotchedRectangle(),
+                    notchMargin: 8,
+                    positionInHorizontal: -8,
+                    color: context.colorScheme.primary,
+                    elevation: 8,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8.0,
+                        vertical: 12,
                       ),
-                      _NavBarItem(
-                        icon: FontAwesomeIcons.compass,
-                        label: 'Explore',
-                        isSelected: widget.child.currentIndex == 1,
-                        onTap: () => _onItemTapped(1),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          _NavBarItem(
+                            icon: FontAwesomeIcons.house,
+                            label: 'Home',
+                            isSelected: widget.child.currentIndex == 0,
+                            onTap: () => _onItemTapped(0),
+                          ),
+                          _NavBarItem(
+                            icon: FontAwesomeIcons.compass,
+                            label: 'Explore',
+                            isSelected: widget.child.currentIndex == 1,
+                            onTap: () => _onItemTapped(1),
+                          ),
+                          const SizedBox(width: 64), // Space for FAB
+                          _NavBarItem(
+                            icon: FontAwesomeIcons.map,
+                            label: 'Map',
+                            isSelected: widget.child.currentIndex == 2,
+                            onTap: () => _onItemTapped(2),
+                          ),
+                          _NavBarItem(
+                            icon: FontAwesomeIcons.clockRotateLeft,
+                            label: 'History',
+                            isSelected: widget.child.currentIndex == 3,
+                            onTap: () => _onItemTapped(3),
+                          ),
+                        ],
                       ),
-                      const SizedBox(width: 64), // Space for FAB
-                      _NavBarItem(
-                        icon: FontAwesomeIcons.map,
-                        label: 'Map',
-                        isSelected: widget.child.currentIndex == 2,
-                        onTap: () => _onItemTapped(2),
-                      ),
-                      _NavBarItem(
-                        icon: FontAwesomeIcons.clockRotateLeft,
-                        label: 'History',
-                        isSelected: widget.child.currentIndex == 3,
-                        onTap: () => _onItemTapped(3),
-                      ),
-                    ],
+                    ),
                   ),
                 ),
               ),

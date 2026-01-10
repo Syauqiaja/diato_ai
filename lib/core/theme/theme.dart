@@ -47,11 +47,38 @@ class AppTheme {
         foregroundColor: Colors.white,
         elevation: 0,
         centerTitle: true,
+        scrolledUnderElevation: 4,
+        shadowColor: primaryColor.withValues(alpha: 0.3),
+        surfaceTintColor: Colors.transparent,
         titleTextStyle: const TextStyle(
           color: Colors.white,
           fontSize: 20,
           fontWeight: FontWeight.w600,
         ),
+        iconTheme: const IconThemeData(
+          color: Colors.white,
+          size: 24,
+        ),
+        actionsIconTheme: const IconThemeData(
+          color: Colors.white,
+          size: 24,
+        ),
+      ),
+      
+      // Sliver AppBar Theme (for SliverAppBar widgets)
+      // Note: SliverAppBar inherits from AppBarTheme but can be customized here
+      // The configuration is part of AppBarTheme for Material 3
+      
+      // Scrollbar Theme (works with CustomScrollView and slivers)
+      scrollbarTheme: ScrollbarThemeData(
+        thumbColor: WidgetStateProperty.all(primaryColor.withValues(alpha: 0.5)),
+        trackColor: WidgetStateProperty.all(Colors.grey.shade200),
+        trackBorderColor: WidgetStateProperty.all(Colors.transparent),
+        radius: const Radius.circular(4),
+        thickness: WidgetStateProperty.all(6),
+        thumbVisibility: WidgetStateProperty.all(false),
+        trackVisibility: WidgetStateProperty.all(false),
+        interactive: true,
       ),
       
       // Card Theme
