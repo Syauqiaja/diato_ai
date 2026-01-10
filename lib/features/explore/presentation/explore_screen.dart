@@ -30,11 +30,9 @@ class _ExploreScreenState extends State<ExploreScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             spacing: 12,
             children: [
-              Expanded(
-                child:ExploreDetailSection(),
-              ),
+              Expanded(child: ExploreDetailSection()),
               ExploreBottomSection(),
-              vSpace(kBotbarHeight)
+              vSpace(kBotbarHeight),
             ],
           ),
         ),

@@ -1,17 +1,22 @@
+import 'package:camera/camera.dart';
 import 'package:diato_ai/utils/extensions/context_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../shared/widgets/custom_bottom_app_bar.dart';
 
-class ScannerBottomAppBar extends StatefulWidget {
-  const ScannerBottomAppBar({super.key});
+class ScannerBottomAppBar extends StatelessWidget {
+  final VoidCallback onRotateCamera;
+  final VoidCallback onToggleFlash;
+  final FlashMode flashMode;
+  
+  const ScannerBottomAppBar({
+    super.key,
+    required this.onRotateCamera,
+    required this.onToggleFlash,
+    required this.flashMode,
+  });
 
-  @override
-  State<ScannerBottomAppBar> createState() => _ScannerBottomAppBarState();
-}
-
-class _ScannerBottomAppBarState extends State<ScannerBottomAppBar> {
   @override
   Widget build(BuildContext context) {
     return Positioned(
@@ -79,12 +84,15 @@ class _ScannerBottomAppBarState extends State<ScannerBottomAppBar> {
     );
   }
 
+  void _onTapFlash() {
+    onToggleFlash();
+  }
+
+  void _onTapRotateCamera() {
+    onRotateCamera();
+  }
+
   void _onTapGallery() {}
-
-  void _onTapFlash() {}
-
-  void _onTapRotateCamera() {}
-
   void _onTapInfo() {}
 }
 
