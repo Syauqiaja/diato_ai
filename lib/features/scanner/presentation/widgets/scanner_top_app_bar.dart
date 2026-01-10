@@ -15,7 +15,7 @@ class _ScannerTopAppBarState extends State<ScannerTopAppBar> {
     return Positioned(
       left: 16,
       right: 16,
-      top: 32,
+      top: 8,
       child: Row(
         spacing: 8,
         children: [
@@ -38,6 +38,7 @@ class _ScannerTopAppBarState extends State<ScannerTopAppBar> {
               padding: EdgeInsets.symmetric(horizontal: 24, vertical: 8),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
                     "Scan",
@@ -52,6 +53,8 @@ class _ScannerTopAppBarState extends State<ScannerTopAppBar> {
                       color: context.colorScheme.primary,
                       height: 0.8,
                     ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ],
               ),

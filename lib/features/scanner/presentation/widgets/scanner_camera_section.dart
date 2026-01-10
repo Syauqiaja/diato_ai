@@ -1,96 +1,41 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 
-class ScannerCameraSection extends StatefulWidget {
-  const ScannerCameraSection({super.key});
+class ScannerCameraSection extends StatelessWidget {
+  final CameraController? cameraController;
+  final bool isInitialized;
+  final String? error;
+  final VoidCallback onRetry;
 
-  @override
-  State<ScannerCameraSection> createState() => _ScannerCameraSectionState();
-}
-
-class _ScannerCameraSectionState extends State<ScannerCameraSection> {
-  CameraController? _cameraController;
-  Future<void>? _initializeControllerFuture;
-  bool _isInitialized = false;
-  String? _error;
-
-  @override
-  void initState() {
-    super.initState();
-    _initializeCamera();
-  }
-
-  Future<void> _initializeCamera() async {
-    try {
-      // Get available cameras
-      final cameras = await availableCameras();
-      
-      if (cameras.isEmpty) {
-        setState(() {
-          _error = 'No cameras found on this device';
-        });
-        return;
-      }
-
-      // Use the first camera (usually back camera)
-      final camera = cameras.first;
-
-      // Create camera controller
-      _cameraController = CameraController(
-        camera,
-        ResolutionPreset.high,
-        enableAudio: false,
-        imageFormatGroup: ImageFormatGroup.jpeg,
-      );
-
-      // Initialize the controller
-      _initializeControllerFuture = _cameraController!.initialize();
-      
-      await _initializeControllerFuture;
-      
-      if (mounted) {
-        setState(() {
-          _isInitialized = true;
-        });
-      }
-    } catch (e) {
-      setState(() {
-        _error = 'Failed to initialize camera: ${e.toString()}';
-      });
-    }
-  }
-
-  @override
-  void dispose() {
-    _cameraController?.dispose();
-    super.dispose();
-  }
+  const ScannerCameraSection({
+    super.key,
+    required this.cameraController,
+    required this.isInitialized,
+    required this.error,
+    required this.onRetry,
+  });
 
   @override
   Widget build(BuildContext context) {
     // Show error message if initialization failed
-    if (_error != null) {
+    if (error != null) {
       return Center(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
             children: [
               Icon(Icons.error_outline, size: 48, color: Colors.red),
               SizedBox(height: 16),
               Text(
-                _error!,
+                error!,
                 textAlign: TextAlign.center,
                 style: TextStyle(color: Colors.red),
               ),
               SizedBox(height: 16),
               ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    _error = null;
-                  });
-                  _initializeCamera();
-                },
+                onPressed: onRetry,
                 child: Text('Retry'),
               ),
             ],
@@ -100,34 +45,24 @@ class _ScannerCameraSectionState extends State<ScannerCameraSection> {
     }
 
     // Show loading while initializing
-    if (!_isInitialized || _cameraController == null) {
+    if (!isInitialized || cameraController == null) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
           children: [
-            CircularProgressIndicator(),
-            SizedBox(height: 16),
-            Text('Initializing camera...'),
+            Container(color: Colors.blueGrey, height: 64, width: 64, child: CircularProgressIndicator()),
           ],
         ),
       );
     }
 
     // Show camera preview
-    return FutureBuilder<void>(
-      future: _initializeControllerFuture,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          return ClipRRect(
-            borderRadius: BorderRadius.circular(16),
-            child: CameraPreview(_cameraController!),
-          );
-        } else {
-          return Center(
-            child: CircularProgressIndicator(),
-          );
-        }
-      },
+    return Container(
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(16)),
+      margin: EdgeInsets.only(top: kToolbarHeight + 32, left: 24, right: 24),
+      clipBehavior: Clip.hardEdge,
+      child: CameraPreview(cameraController!),
     );
   }
 }
