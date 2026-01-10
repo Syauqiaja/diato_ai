@@ -1,3 +1,4 @@
+import 'package:diato_ai/features/shared/widgets/linear_line.dart';
 import 'package:diato_ai/features/shared/widgets/profile_button.dart';
 import 'package:diato_ai/features/shared/widgets/spacings.dart';
 import 'package:diato_ai/utils/extensions/context_extensions.dart';
@@ -199,25 +200,7 @@ class _HomeAppBarState extends State<HomeAppBar> {
             ),
           ),
           const SizedBox(height: 8),
-          SizedBox(
-            width: 200,
-            child: Row(
-              children: [
-                Expanded(
-                  child: Container(
-                    height: 4,
-                    color: context.colorScheme.secondary,
-                  ),
-                ),
-                Container(
-                  width: 32,
-                  height: 4,
-                  color: context.colorScheme.tertiary,
-                ),
-              ],
-            ),
-          ),
-
+          LinearLine(),
           Text(
             "We owe so much to diatoms!",
             style: context.textTheme.bodySmall?.copyWith(color: Colors.white),

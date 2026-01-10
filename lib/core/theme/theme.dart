@@ -6,6 +6,7 @@ class AppTheme {
   static const Color secondaryColor = Color(0xFF81E4EA);
   static const Color tertiaryColor = Color(0xFFFBCF98);
   static const Color canvasColor = Colors.white;
+  static const Color secondaryCanvasColor = Color(0xFFF3F3F3);
 
   // Light Theme
   static ThemeData get lightTheme {
