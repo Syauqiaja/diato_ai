@@ -8,13 +8,14 @@ import '../../../shared/widgets/custom_bottom_app_bar.dart';
 class ScannerBottomAppBar extends StatelessWidget {
   final VoidCallback onRotateCamera;
   final VoidCallback onToggleFlash;
+  final VoidCallback onCapture;
   final FlashMode flashMode;
   
   const ScannerBottomAppBar({
     super.key,
     required this.onRotateCamera,
     required this.onToggleFlash,
-    required this.flashMode,
+    required this.flashMode, required this.onCapture,
   });
 
   @override
@@ -29,7 +30,7 @@ class ScannerBottomAppBar extends StatelessWidget {
         child: Scaffold(
           backgroundColor: Colors.transparent,
           floatingActionButton: FloatingActionButton(
-            onPressed: () {},
+            onPressed: onCapture,
             shape: const CircleBorder(),
             backgroundColor: context.colorScheme.tertiary,
             foregroundColor: context.colorScheme.primary,

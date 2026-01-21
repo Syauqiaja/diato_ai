@@ -7,6 +7,8 @@ import 'package:diato_ai/features/scanner/presentation/scanner_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../features/scanner/presentation/scanner_detail_screen.dart';
+
 class AppRoutes {
   // Private constructor to prevent instantiation
   AppRoutes._();
@@ -62,6 +64,12 @@ class AppRoutes {
         path: ScannerScreen.routePath,
         name: ScannerScreen.routeName,
         builder: (context, state) => const ScannerScreen(),
+        routes: [
+          GoRoute(path: ScannerDetailScreen.routePath,
+            name: ScannerDetailScreen.routeName,
+            builder: (context, state) => const ScannerDetailScreen(),
+          ),
+        ]
       ),
     ],
     errorBuilder: (context, state) =>

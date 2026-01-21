@@ -1,9 +1,11 @@
 import 'package:camera/camera.dart';
 import 'package:diato_ai/core/theme/theme.dart';
+import 'package:diato_ai/features/scanner/presentation/scanner_detail_screen.dart';
 import 'package:diato_ai/features/scanner/presentation/widgets/scanner_bottom_app_bar.dart';
 import 'package:diato_ai/features/scanner/presentation/widgets/scanner_camera_section.dart';
 import 'package:diato_ai/features/scanner/presentation/widgets/scanner_top_app_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class ScannerScreen extends StatefulWidget {
   static const String routeName = 'scanner';
@@ -167,11 +169,16 @@ class _ScannerScreenState extends State<ScannerScreen> {
             ScannerBottomAppBar(
               onRotateCamera: _rotateCamera,
               onToggleFlash: _toggleFlash,
+              onCapture: _onCapture,
               flashMode: _flashMode,
             ),
           ],
         ),
       ),
     );
+  }
+
+  void _onCapture() {
+    context.pushNamed(ScannerDetailScreen.routeName);
   }
 }
