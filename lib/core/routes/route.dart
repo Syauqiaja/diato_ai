@@ -1,4 +1,6 @@
 import 'package:diato_ai/features/app_layout/app_layout.dart';
+import 'package:diato_ai/features/auth/login/presentation/login_screen.dart';
+import 'package:diato_ai/features/auth/register/presentation/register_screen.dart';
 import 'package:diato_ai/features/explore/presentation/explore_screen.dart';
 import 'package:diato_ai/features/history/presentation/history_screen.dart';
 import 'package:diato_ai/features/home/presentation/home_screen.dart';
@@ -65,11 +67,22 @@ class AppRoutes {
         name: ScannerScreen.routeName,
         builder: (context, state) => const ScannerScreen(),
         routes: [
-          GoRoute(path: ScannerDetailScreen.routePath,
+          GoRoute(
+            path: ScannerDetailScreen.routePath,
             name: ScannerDetailScreen.routeName,
             builder: (context, state) => const ScannerDetailScreen(),
           ),
-        ]
+        ],
+      ),
+      GoRoute(
+        path: LoginScreen.routePath,
+        name: LoginScreen.routeName,
+        builder: (context, state) => LoginScreen(),
+      ),
+      GoRoute(
+        path: RegisterScreen.routePath,
+        name: RegisterScreen.routeName,
+        builder: (context, state) => RegisterScreen(),
       ),
     ],
     errorBuilder: (context, state) =>
