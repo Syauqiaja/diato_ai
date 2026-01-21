@@ -66,7 +66,22 @@ class _ScannerDetailScreenState extends State<ScannerDetailScreen> {
               ),
             ],
           ),
-          child: AppButton(onPressed: () {}, child: const Text("Simpan")),
+          child: Row(
+            spacing: 8,
+            children: [
+              Expanded(
+                child: AppButton(
+                  onPressed: () {},
+                  backgroundColor: AppButtonColorType.white,
+                  foregroundColor: AppButtonColorType.primary,
+                  child: const Text("Scan Lagi"),
+                ),
+              ),
+              Expanded(
+                child: AppButton(onPressed: () {}, child: const Text("Simpan")),
+              ),
+            ],
+          ),
         ),
       ),
       body: SafeArea(
@@ -119,8 +134,8 @@ class _ScannerDetailScreenState extends State<ScannerDetailScreen> {
                               vertical: 6,
                             ),
                             decoration: BoxDecoration(
-                              color: context.colorScheme.primary.withOpacity(
-                                0.1,
+                              color: context.colorScheme.primary.withValues(
+                                alpha: 0.1,
                               ),
                               borderRadius: BorderRadius.circular(16),
                             ),
@@ -171,7 +186,7 @@ class _ScannerDetailScreenState extends State<ScannerDetailScreen> {
                             ),
                           ],
                         );
-                      }).toList(),
+                      }),
                       vSpace(16),
                     ],
                   ),
