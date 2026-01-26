@@ -1,8 +1,8 @@
+import 'package:diato_ai/features/analytics/presentation/anaylitcs_screen.dart';
 import 'package:diato_ai/features/app_layout/app_layout.dart';
 import 'package:diato_ai/features/auth/login/presentation/login_screen.dart';
 import 'package:diato_ai/features/auth/register/presentation/register_screen.dart';
 import 'package:diato_ai/features/explore/presentation/explore_screen.dart';
-import 'package:diato_ai/features/history/presentation/history_screen.dart';
 import 'package:diato_ai/features/home/presentation/home_screen.dart';
 import 'package:diato_ai/features/map/presentation/map_screen.dart';
 import 'package:diato_ai/features/scanner/presentation/scanner_screen.dart';
@@ -54,9 +54,9 @@ class AppRoutes {
           StatefulShellBranch(
             routes: [
               GoRoute(
-                path: HistoryScreen.routePath,
-                name: HistoryScreen.routeName,
-                builder: (context, state) => const HistoryScreen(),
+                path: AnaylitcsScreen.routePath,
+                name: AnaylitcsScreen.routeName,
+                builder: (context, state) => const AnaylitcsScreen(),
               ),
             ],
           ),

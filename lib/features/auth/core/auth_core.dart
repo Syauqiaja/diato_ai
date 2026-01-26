@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../shared/models/user_model.dart';
@@ -19,6 +20,8 @@ final class AuthCore {
   // Stream controllers for reactive state management
   final _authStateController = StreamController<bool>.broadcast();
   final _userStateController = StreamController<UserModel?>.broadcast();
+
+  final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 
   UserModel? _currentUser;
   String? _authToken;

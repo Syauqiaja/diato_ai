@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class AppTheme {
   // Color definitions
   static const Color primaryColor = Color(0xFF3F4EB8);
+  static const Color primaryTextColor = Color(0xFF3F60A0);
   static const Color secondaryColor = Color(0xFF81E4EA);
   static const Color tertiaryColor = Color(0xFFFBCF98);
   static const Color canvasColor = Colors.white;

@@ -1,5 +1,6 @@
 import 'package:diato_ai/core/data/base_repository.dart';
 import 'package:diato_ai/core/data/result.dart';
+import 'package:diato_ai/core/exceptions/auth_exceptions.dart';
 import 'package:diato_ai/features/auth/core/auth_core.dart';
 import 'package:diato_ai/features/auth/shared/models/auth_response.dart';
 import 'package:diato_ai/features/auth/shared/models/user_model.dart';
@@ -39,19 +40,28 @@ final class RegisterRepository extends BaseRepository {
 
         return Result.success(authResponse.user);
       } else {
-        return Result.failure(
-          response.data['message'] ?? 'Registration failed',
-        );
+        throw ServerException(response.data['message']);
       }
+    } on AuthException {
+      rethrow;
     } on DioException catch (e) {
       if (e.response != null) {
-        return Result.failure(
-          e.response?.data['message'] ?? 'Registration failed',
-        );
+        final statusCode = e.response!.statusCode;
+        final message = e.response?.data['message'];
+
+        if (statusCode == 409 || statusCode == 400) {
+          // Check if error message indicates email already exists
+          if (message?.toLowerCase().contains('email') ?? false) {
+            throw EmailAlreadyInUseException();
+          } else if (message?.toLowerCase().contains('password') ?? false) {
+            throw WeakPasswordException();
+          }
+        }
+        throw ServerException(message);
       }
-      return Result.failure('An error occurred: ${e.message}');
+      throw NetworkException(e.message);
     } catch (e) {
-      return Result.failure('An error occurred: ${e.toString()}');
+      throw UnknownAuthException(e.toString());
     }
   }
 }
