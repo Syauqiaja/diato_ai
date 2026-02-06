@@ -30,7 +30,6 @@ class _HomeScreenState extends State<HomeScreen> {
           slivers: [
             HomeAppBar(scrollController: _scrollController),
             HomeBodySection(),
-            // SliverToBoxAdapter(child: vSpace(300)),
           ],
         ),
       ),
