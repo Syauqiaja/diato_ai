@@ -1,11 +1,12 @@
-import 'package:diato_ai/core/assets/assets.dart';
 import 'package:diato_ai/utils/extensions/context_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class PenelitianItem extends StatelessWidget {
+  final String title;
+  final String cover;
   final Function onTap;
-  const PenelitianItem({super.key, required this.onTap});
+  const PenelitianItem({super.key, required this.onTap, required this.title, required this.cover});
 
   @override
   Widget build(BuildContext context) {
@@ -14,11 +15,11 @@ class PenelitianItem extends StatelessWidget {
       clipBehavior: Clip.hardEdge,
       color: Colors.transparent,
       child: Ink(
-        width: 170,
-        height: 140,
+        width: double.infinity,
+        height: 200,
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage(Assets.diatomi),
+            image: NetworkImage(cover),
             fit: BoxFit.cover,
           ),
         ),
@@ -38,7 +39,7 @@ class PenelitianItem extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Text(
-                      "Penelitian \nStasion 1",
+                      title,
                       style: context.textTheme.bodyMedium?.copyWith(
                         color: context.colorScheme.primary,
                       ),

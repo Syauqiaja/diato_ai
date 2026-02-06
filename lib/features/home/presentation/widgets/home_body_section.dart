@@ -17,7 +17,7 @@ class _HomeBodySectionState extends State<HomeBodySection> {
 
   @override
   Widget build(BuildContext context) {
-    return SliverFillRemaining(
+    return SliverToBoxAdapter(
       child: Container(
         decoration: BoxDecoration(
           color: context.theme.scaffoldBackgroundColor,
@@ -31,16 +31,7 @@ class _HomeBodySectionState extends State<HomeBodySection> {
               _buildListHeader(context),
               vSpace(16),
               HomeBodyListSection(),
-          
-              vSpace(32),
-              _buildListHeader(context),
-              vSpace(16),
-              HomeBodyListSection(),
-          
-              vSpace(32),
-              _buildListHeader(context),
-              vSpace(16),
-              HomeBodyListSection(),
+              vSpace(200),
             ],
           ),
         ),

@@ -1,7 +1,9 @@
+import 'package:diato_ai/features/home/presentation/cubit/article_cubit.dart';
 import 'package:diato_ai/features/home/presentation/widgets/home_app_bar.dart';
 import 'package:diato_ai/features/home/presentation/widgets/home_body_section.dart';
 import 'package:diato_ai/utils/extensions/context_extensions.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomeScreen extends StatefulWidget {
   static const String routeName = 'home';
@@ -19,12 +21,18 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: context.colorScheme.primary,
-      body: CustomScrollView(
-        controller: _scrollController,
-        slivers: [
-          HomeAppBar(scrollController: _scrollController),
-          HomeBodySection(),
-        ],
+      body: RefreshIndicator(
+        onRefresh: () async {
+          await context.read<ArticleCubit>().getArticles();
+        },
+        child: CustomScrollView(
+          controller: _scrollController,
+          slivers: [
+            HomeAppBar(scrollController: _scrollController),
+            HomeBodySection(),
+            // SliverToBoxAdapter(child: vSpace(300)),
+          ],
+        ),
       ),
     );
   }
