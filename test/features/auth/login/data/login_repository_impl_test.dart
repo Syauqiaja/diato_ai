@@ -295,7 +295,6 @@ void main() {
     const tName = 'Test User';
     const tToken = 'test_token';
     const tIdToken = 'firebase_id_token';
-    final tUserModel = UserModel(1, tName, tEmail);
 
     test('should return UserModel when Google login succeeds', () async {
       // arrange
