@@ -1,26 +1,18 @@
-import 'package:diato_ai/core/data/base_repository.dart';
 import 'package:diato_ai/core/data/result.dart';
 import 'package:diato_ai/core/exceptions/auth_exceptions.dart';
 import 'package:diato_ai/features/auth/core/auth_core.dart';
+import 'package:diato_ai/features/auth/register/domain/register_repository.dart';
 import 'package:diato_ai/features/auth/shared/models/auth_response.dart';
 import 'package:diato_ai/features/auth/shared/models/user_model.dart';
 import 'package:dio/dio.dart';
 
-final class RegisterRepository extends BaseRepository {
-  final _authCore = AuthCore();
+final class RegisterRepositoryImpl extends RegisterRepository {
+  final Dio dio;
+  final AuthCore _authCore;
 
-  /// Registers a new user with the provided information.
-  ///
-  /// Sends a POST request to the registration endpoint with user details.
-  /// Returns a [Result] containing the newly created [UserModel] on success,
-  /// or an error message on failure.
-  ///
-  /// On successful registration, the user and token are stored in AuthCore.
-  ///
-  /// Parameters:
-  /// - [name]: The user's full name
-  /// - [email]: The user's email address
-  /// - [password]: The user's password
+  RegisterRepositoryImpl(this.dio, this._authCore);
+
+  @override
   Future<Result<UserModel>> register({
     required String name,
     required String email,
@@ -28,7 +20,7 @@ final class RegisterRepository extends BaseRepository {
   }) async {
     try {
       final response = await dio.post(
-        '$baseUrl/register',
+        '/register',
         data: {'name': name, 'email': email, 'password': password},
       );
 

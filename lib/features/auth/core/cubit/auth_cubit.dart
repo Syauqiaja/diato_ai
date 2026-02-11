@@ -2,12 +2,12 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:diato_ai/core/data/result.dart';
-import 'package:diato_ai/core/di/injection.dart';
 import 'package:diato_ai/features/auth/core/auth_core.dart';
-import 'package:diato_ai/features/auth/login/data/login_repository.dart';
-import 'package:diato_ai/features/auth/register/data/register_repository.dart';
 import 'package:diato_ai/features/auth/shared/models/user_model.dart';
 import 'package:equatable/equatable.dart';
+
+import '../../login/domain/login_repository.dart';
+import '../../register/domain/register_repository.dart';
 
 part 'auth_state.dart';
 
@@ -17,14 +17,11 @@ class AuthCubit extends Cubit<AuthState> {
   final RegisterRepository _registerRepository;
   StreamSubscription<UserModel?>? _userSubscription;
 
-  AuthCubit({
-    AuthCore? authCore,
-    LoginRepository? loginRepository,
-    RegisterRepository? registerRepository,
-  }) : _authCore = authCore ?? getIt<AuthCore>(),
-       _loginRepository = loginRepository ?? getIt<LoginRepository>(),
-       _registerRepository = registerRepository ?? getIt<RegisterRepository>(),
-       super(AuthInitial()) {
+  AuthCubit(
+    this._authCore,
+    this._loginRepository,
+    this._registerRepository,
+  ) : super(AuthInitial()) {
     _initialize();
   }
 
@@ -74,7 +71,7 @@ class AuthCubit extends Cubit<AuthState> {
 
       switch (result) {
         case Success<UserModel>():
-          emit(AuthAuthenticated(result.data));
+          emit(AuthAuthenticated(result.value));
         case Failure<UserModel>():
           emit(AuthError(result.message));
           // Return to unauthenticated state after showing error
@@ -105,7 +102,7 @@ class AuthCubit extends Cubit<AuthState> {
 
       switch (result) {
         case Success<UserModel>():
-          emit(AuthAuthenticated(result.data));
+          emit(AuthAuthenticated(result.value));
         case Failure<UserModel>():
           emit(AuthError(result.message));
           // Return to unauthenticated state after showing error
@@ -143,7 +140,7 @@ class AuthCubit extends Cubit<AuthState> {
 
       switch (result) {
         case Success<UserModel>():
-          emit(AuthAuthenticated(result.data));
+          emit(AuthAuthenticated(result.value));
         case Failure<UserModel>():
           emit(AuthError(result.message));
           // Return to unauthenticated state after showing error

@@ -1,7 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:diato_ai/core/data/result.dart';
-import 'package:diato_ai/core/di/injection.dart';
-import 'package:diato_ai/features/home/repository/home_repository.dart';
+import 'package:diato_ai/features/home/domain/repository/home_repository.dart';
 import 'package:diato_ai/features/shared/models/article.dart';
 import 'package:equatable/equatable.dart';
 
@@ -10,9 +9,7 @@ part 'article_state.dart';
 class ArticleCubit extends Cubit<ArticleState> {
   final HomeRepository _homeRepository;
 
-  ArticleCubit({HomeRepository? homeRepository})
-      : _homeRepository = homeRepository ?? getIt<HomeRepository>(),
-        super(ArticleInitial());
+  ArticleCubit(this._homeRepository) : super(ArticleInitial());
 
   /// Fetch all articles
   Future<void> getArticles() async {
@@ -23,7 +20,7 @@ class ArticleCubit extends Cubit<ArticleState> {
 
       switch (result) {
         case Success<List<Article>>():
-          emit(ArticleLoaded(result.data));
+          emit(ArticleLoaded(result.value));
         case Failure<List<Article>>():
           emit(ArticleError(result.message));
       }

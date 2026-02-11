@@ -24,9 +24,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (context) => AuthCubit()),
-        BlocProvider(create: (context) => ArticleCubit()..getArticles()),
-        BlocProvider(create: (context) => CourseListCubit()),
+        BlocProvider(create: (context) => AuthCubit(getIt(), getIt(), getIt())..checkAuthStatus()),
+        BlocProvider(create: (context) => ArticleCubit(getIt())..getArticles()),
+        BlocProvider(create: (context) => CourseListCubit(getIt())),
       ],
       child: MaterialApp.router(title: 'Diato AI', theme: AppTheme.lightTheme, routerConfig: AppRoutes.router, debugShowCheckedModeBanner: false),
     );

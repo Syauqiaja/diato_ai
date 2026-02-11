@@ -6,12 +6,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../shared/models/user_model.dart';
 
-final class AuthCore {
-  static final AuthCore _instance = AuthCore._internal();
-
-  factory AuthCore() => _instance;
-
-  AuthCore._internal();
+class AuthCore {
+  AuthCore(this._firebaseAuth);
 
   // Keys for SharedPreferences
   static const String _userKey = 'user_data';
@@ -21,7 +17,7 @@ final class AuthCore {
   final _authStateController = StreamController<bool>.broadcast();
   final _userStateController = StreamController<UserModel?>.broadcast();
 
-  final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+  final FirebaseAuth _firebaseAuth;
 
   UserModel? _currentUser;
   String? _authToken;

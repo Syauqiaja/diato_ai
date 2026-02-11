@@ -1,4 +1,3 @@
-import 'package:diato_ai/core/data/base_repository.dart';
 import 'package:diato_ai/core/data/result.dart';
 import 'package:diato_ai/core/exceptions/auth_exceptions.dart';
 import 'package:diato_ai/features/auth/core/auth_core.dart';
@@ -7,28 +6,23 @@ import 'package:diato_ai/features/auth/shared/models/user_model.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-final class LoginRepository extends BaseRepository {
-  final _authCore = AuthCore();
-  final _firebaseAuth = FirebaseAuth.instance;
+import '../domain/login_repository.dart';
 
-  /// Authenticates a user with email and password.
-  ///
-  /// Sends a POST request to the login endpoint with the provided credentials.
-  /// Returns a [Result] containing the authenticated [UserModel] on success,
-  /// or an error message on failure.
-  ///
-  /// On successful login, the user and token are stored in AuthCore.
-  ///
-  /// Parameters:
-  /// - [email]: The user's email address
-  /// - [password]: The user's password
+final class LoginRepositoryImpl extends LoginRepository {
+  final Dio _dio;
+  final AuthCore _authCore;
+  final FirebaseAuth _firebaseAuth;
+
+  LoginRepositoryImpl(this._dio, this._authCore, this._firebaseAuth);
+
+  @override
   Future<Result<UserModel>> login({
     required String email,
     required String password,
   }) async {
     try {
-      final response = await dio.post(
-        '$baseUrl/login',
+      final response = await _dio.post(
+        '/login',
         data: {'email': email, 'password': password},
       );
 
@@ -65,14 +59,7 @@ final class LoginRepository extends BaseRepository {
     }
   }
 
-  /// Authenticates a user with Google Sign-In.
-  ///
-  /// Performs Google Sign-In flow using Firebase Auth,
-  /// gets the ID token, and sends it to the backend for authentication.
-  /// Returns a [Result] containing the authenticated [UserModel] on success,
-  /// or an error message on failure.
-  ///
-  /// On successful login, the user and token are stored in AuthCore.
+  @override
   Future<Result<UserModel>> loginWithGoogle() async {
     try {
       // Create Google provider
@@ -97,8 +84,8 @@ final class LoginRepository extends BaseRepository {
       }
 
       // Send token to backend for verification and user creation/login
-      final response = await dio.post(
-        '$baseUrl/login-with-token',
+      final response = await _dio.post(
+        '/login-with-token',
         data: {'token': idToken},
       );
 
