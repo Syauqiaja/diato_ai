@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 
 class ExploreItem extends StatelessWidget {
   final String title;
-  const ExploreItem({super.key, required this.title});
+  final String? imageUrl;
+  const ExploreItem({super.key, required this.title, this.imageUrl});
 
   @override
   Widget build(BuildContext context) {
@@ -18,12 +19,28 @@ class ExploreItem extends StatelessWidget {
       clipBehavior: Clip.hardEdge,
       child: Stack(
         children: [
-          Image.asset(
-            Assets.diatomi,
-            fit: BoxFit.cover,
-            width: double.infinity,
-            height: double.infinity,
-          ),
+          if (imageUrl != null && imageUrl!.startsWith('http'))
+            Image.network(
+              imageUrl!,
+              fit: BoxFit.cover,
+              width: double.infinity,
+              height: double.infinity,
+              errorBuilder: (context, error, stackTrace) {
+                return Image.asset(
+                  Assets.diatomi,
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                  height: double.infinity,
+                );
+              },
+            )
+          else
+            Image.asset(
+              imageUrl ?? Assets.diatomi,
+              fit: BoxFit.cover,
+              width: double.infinity,
+              height: double.infinity,
+            ),
           Positioned(
             bottom: 8,
             right: 8,

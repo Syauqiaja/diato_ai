@@ -1,8 +1,10 @@
 import 'package:diato_ai/core/theme/theme.dart';
+import 'package:diato_ai/features/explore/presentation/cubits/explore_index/explore_index_cubit.dart';
 import 'package:diato_ai/features/explore/presentation/widgets/explore_bottom_section.dart';
 import 'package:diato_ai/features/explore/presentation/widgets/explore_detail_section.dart';
 import 'package:diato_ai/features/shared/widgets/spacings.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ExploreScreen extends StatefulWidget {
   static const String routeName = 'explore';
@@ -17,6 +19,9 @@ class _ExploreScreenState extends State<ExploreScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<ExploreIndexCubit>().fetchCourses();
+    });
   }
 
   @override

@@ -1,5 +1,5 @@
 final class CourseDetail {
-  final String id;
+  final int id;
   final String title;
   final String cover;
   final String content;
@@ -8,7 +8,7 @@ final class CourseDetail {
 
   factory CourseDetail.fromJson(Map<String, dynamic> json) {
     return CourseDetail(
-      id: json['id'] as String,
+      id: json['id'] as int,
       title: json['title'] as String,
       cover: json['cover'] as String,
       content: json['content'] as String,

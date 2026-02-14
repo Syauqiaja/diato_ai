@@ -53,6 +53,7 @@ dependencies:
   url_launcher: ^6.3.2
   mocktail: ^1.0.4
   firebase_auth_mocks: ^0.15.1
+  flutter_widget_from_html: ^0.17.1
 
 dev_dependencies:
   build_runner: ^2.4.6

@@ -34,7 +34,7 @@ final class CourseRepositoryImpl extends CourseRepository {
   }
 
   @override
-  Future<Result<CourseDetail>> getCourseDetail(String courseId) async {
+  Future<Result<CourseDetail>> getCourseDetail(int courseId) async {
     try {
       final response = await dio.get('/courses/$courseId');
 

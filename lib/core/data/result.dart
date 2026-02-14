@@ -7,6 +7,17 @@ sealed class Result<T> {
   T? get data => this is Success<T> ? (this as Success<T>).value : null;
   String? get errorMessage => this is Failure<T> ? (this as Failure<T>).message : null;
 
+  R when<R>({
+    required R Function(T data) success,
+    required R Function(String message) failure,
+  }) {
+    if (this is Success<T>) {
+      return success((this as Success<T>).value);
+    } else {
+      return failure((this as Failure<T>).message);
+    }
+  }
+
   bool get isSuccess => this is Success<T>;
   bool get isFailure => this is Failure<T>;
 }
