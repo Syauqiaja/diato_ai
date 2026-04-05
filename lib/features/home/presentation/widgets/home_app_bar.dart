@@ -3,9 +3,11 @@ import 'package:diato_ai/features/shared/widgets/profile_button.dart';
 import 'package:diato_ai/features/shared/widgets/spacings.dart';
 import 'package:diato_ai/utils/extensions/context_extensions.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
 import '../../../../core/assets/assets.dart';
+import '../../../shared/actionable/app_button.dart';
 
 class HomeAppBar extends StatefulWidget {
   final ScrollController _scrollController;
@@ -83,16 +85,9 @@ class _HomeAppBarState extends State<HomeAppBar> {
         opacity: _titleOpacity,
         child: Row(
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text("Diatom-AI"),
-                vSpace(4),
-                LinearLine(width: 100)
-              ],
-            ),
+            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text("Diatom-AI"), vSpace(4), LinearLine(width: 100)]),
             Spacer(),
-            ProfileButton(),
+            _buildActionButton(context),
           ],
         ),
       ),
@@ -126,7 +121,7 @@ class _HomeAppBarState extends State<HomeAppBar> {
                           vSpace(24),
                           SizedBox(
                             height: kToolbarHeight,
-                            child: Row(mainAxisAlignment: MainAxisAlignment.end, crossAxisAlignment: CrossAxisAlignment.start, children: [ProfileButton()]),
+                            child: Row(mainAxisAlignment: MainAxisAlignment.end, crossAxisAlignment: CrossAxisAlignment.start, children: [_buildActionButton(context)]),
                           ),
                           _buildTitle(context),
                           Container(
@@ -160,12 +155,11 @@ class _HomeAppBarState extends State<HomeAppBar> {
           Text("Diatom-AI!", style: context.textTheme.displayLarge?.copyWith(color: Colors.white)),
           const SizedBox(height: 8),
           LinearLine(),
-          Text("Diatom Identification and Analysis Tool for Monitoring based on Artificial Intelligence", style: context.textTheme.bodySmall?.copyWith(color: Colors.white),),
+          Text("Diatom Identification and Analysis Tool for Monitoring based on Artificial Intelligence", style: context.textTheme.bodySmall?.copyWith(color: Colors.white)),
         ],
       ),
     );
   }
-
 
   Widget _buildInfoSection(BuildContext context) {
     final color = Colors.white;
@@ -173,21 +167,25 @@ class _HomeAppBarState extends State<HomeAppBar> {
       padding: EdgeInsets.all(8),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(
-          color: color,
-          width: 1,
-        ),
+        border: Border.all(color: color, width: 1),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            "Diatom dimanfaatkan dalam pembuatan pasta gigi, insektisida organik, suplemen kesehatan, dan bioindikator, serta berkontribusi besar terhadap oksigen yang kita hirup setiap hari.",
-            style: context.textTheme.bodyMedium?.copyWith(height: 1.5, color: color,),
-          ),
-        ],
+        children: [Text("Diatom dimanfaatkan dalam pembuatan pasta gigi, insektisida organik, suplemen kesehatan, dan bioindikator, serta berkontribusi besar terhadap oksigen yang kita hirup setiap hari.", style: context.textTheme.bodyMedium?.copyWith(height: 1.5, color: color))],
       ),
+    );
+  }
+
+  Widget _buildActionButton(BuildContext context) {
+    return AppButton(
+      backgroundColor: AppButtonColorType.white,
+      foregroundColor: AppButtonColorType.primary,
+      padding: EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+      onPressed: () {
+        // context.pushNamed(LoginScreen.routeName);
+      },
+      child: Row(children: [FaIcon(FontAwesomeIcons.userGraduate, size: 20), hSpace(8), Text('About Diatom-AI')]),
     );
   }
 }

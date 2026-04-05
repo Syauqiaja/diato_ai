@@ -9,6 +9,7 @@ import 'package:diato_ai/features/scanner/presentation/scanner_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../features/explore/presentation/course_detail_screen.dart';
 import '../../features/scanner/presentation/scanner_detail_screen.dart';
 
 class AppRoutes {
@@ -25,40 +26,19 @@ class AppRoutes {
         },
         branches: [
           StatefulShellBranch(
-            routes: [
-              GoRoute(
-                path: HomeScreen.routePath,
-                name: HomeScreen.routeName,
-                builder: (context, state) => const HomeScreen(),
-              ),
-            ],
+            routes: [GoRoute(path: HomeScreen.routePath, name: HomeScreen.routeName, builder: (context, state) => const HomeScreen())],
           ),
           StatefulShellBranch(
-            routes: [
-              GoRoute(
-                path: ExploreScreen.routePath,
-                name: ExploreScreen.routeName,
-                builder: (context, state) => const ExploreScreen(),
-              ),
-            ],
+            routes: [GoRoute(path: ExploreScreen.routePath, name: ExploreScreen.routeName, builder: (context, state) => const ExploreScreen(), routes: [
+                  
+                ],
+              )],
           ),
           StatefulShellBranch(
-            routes: [
-              GoRoute(
-                path: MapScreen.routePath,
-                name: MapScreen.routeName,
-                builder: (context, state) => const MapScreen(),
-              ),
-            ],
+            routes: [GoRoute(path: MapScreen.routePath, name: MapScreen.routeName, builder: (context, state) => const MapScreen())],
           ),
           StatefulShellBranch(
-            routes: [
-              GoRoute(
-                path: AnaylitcsScreen.routePath,
-                name: AnaylitcsScreen.routeName,
-                builder: (context, state) => const AnaylitcsScreen(),
-              ),
-            ],
+            routes: [GoRoute(path: AnaylitcsScreen.routePath, name: AnaylitcsScreen.routeName, builder: (context, state) => const AnaylitcsScreen())],
           ),
         ],
       ),
@@ -66,26 +46,19 @@ class AppRoutes {
         path: ScannerScreen.routePath,
         name: ScannerScreen.routeName,
         builder: (context, state) => const ScannerScreen(),
-        routes: [
-          GoRoute(
-            path: ScannerDetailScreen.routePath,
-            name: ScannerDetailScreen.routeName,
-            builder: (context, state) => const ScannerDetailScreen(),
-          ),
-        ],
+        routes: [GoRoute(path: ScannerDetailScreen.routePath, name: ScannerDetailScreen.routeName, builder: (context, state) => const ScannerDetailScreen())],
       ),
+      GoRoute(path: LoginScreen.routePath, name: LoginScreen.routeName, builder: (context, state) => LoginScreen()),
+      GoRoute(path: RegisterScreen.routePath, name: RegisterScreen.routeName, builder: (context, state) => RegisterScreen()),
       GoRoute(
-        path: LoginScreen.routePath,
-        name: LoginScreen.routeName,
-        builder: (context, state) => LoginScreen(),
-      ),
-      GoRoute(
-        path: RegisterScreen.routePath,
-        name: RegisterScreen.routeName,
-        builder: (context, state) => RegisterScreen(),
+        path: CourseDetailScreen.routePath,
+        name: CourseDetailScreen.routeName,
+        builder: (context, state) {
+          final courseId = int.parse(state.pathParameters['courseId']!);
+          return CourseDetailScreen(courseId: courseId);
+        },
       ),
     ],
-    errorBuilder: (context, state) =>
-        const Scaffold(body: Center(child: Text('Page not found'))),
+    errorBuilder: (context, state) => Scaffold(body: Center(child: Text('Page not found \n${state.error}'))),
   );
 }
