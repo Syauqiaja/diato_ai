@@ -4,11 +4,13 @@ import 'package:diato_ai/utils/extensions/context_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import 'widgets/info_section.dart';
+
 class AppInfoScreen extends StatelessWidget {
   static const String routeName = 'app-info';
   static const String routePath = 'app-info';
 
-  const AppInfoScreen({super.key});
+  AppInfoScreen({super.key});
 
   static void push(BuildContext context) {
     context.pushNamed(routeName);
@@ -36,66 +38,45 @@ class AppInfoScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              _InfoSection(
-                label: 'Title',
-                content: 'Diato AI - Aplikasi Pembelajaran Interaktif',
-              ),
-              vSpace(16),
-              _InfoSection(
+              InfoSection(
                 label: 'Last Updated',
                 content: 'April 2026',
               ),
               vSpace(16),
-              _InfoSection(
-                label: 'Content',
-                content:
-                    'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.\n\nDuis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nSed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.',
-              ),
+              for (var content in _contents)
+                InfoSection(
+                  label: null,
+                  content: content,
+                ),
+              vSpace(16),
+              for (final entry in _accordionContents.entries) ...[
+                InfoAccordionItem(
+                  title: entry.key,
+                  content: entry.value,
+                ),
+                vSpace(12),
+              ],
             ],
           ),
         ),
       ),
     );
   }
-}
 
-class _InfoSection extends StatelessWidget {
-  final String label;
-  final String content;
 
-  const _InfoSection({
-    required this.label,
-    required this.content,
-  });
+  final List<String> _contents = [
+"""Diatom-AI merupakan aplikasi berbasis Convolutional Neural Networks (AI-CNN) yang dikembangkan untuk mendukung pembelajaran dan penelitian diatom dalam kerangka Generative Pedagogy–Microalgae Identification Learning. Aplikasi ini memfasilitasi tahapan Constructing, Investigating, dan Interpreting dalam proses pembelajaran.
 
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: AppTheme.canvasColor,
-      borderRadius: BorderRadius.circular(16),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              label,
-              style: context.textTheme.titleMedium?.copyWith(
-                color: context.colorScheme.primary,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            vSpace(8),
-            Text(
-              content,
-              style: context.textTheme.bodyMedium?.copyWith(
-                color: context.colorScheme.primary.withOpacity(0.8),
-                height: 1.5,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+Pada tahap Constructing, Diatom-AI menyediakan informasi dasar tentang diatom. Pada tahap Investigating, aplikasi mendukung identifikasi spesies diatom secara otomatis berbasis AI-CNN. Selanjutnya, pada tahap Interpreting, aplikasi membantu pengguna mengaitkan hasil identifikasi dengan kondisi ekologis perairan melalui perhitungan indeks kualitas air menggunakan Brantas River Diatom Index (BRDI).""",
+  ];
+  final Map<String, String> _accordionContents = {
+    "Capaian Pembelajaran Lulusan" : "Penggunaan Diatom-AI mendukung Capaian Pembelajaran Lulusan (CPL), yaitu mahasiswa menguasai konsep teoritis biologi dasar secara terintegrasi dengan menggunakan pemikiran logis, kritis, sistematis dan inovatif melalui pendekatan IPTEK untuk menganalisis  berbagai permasalahan dibidang biologi sehingga dapat mengagumi dan berusaha menjaga ciptaanNya.",
+    "Capaian Pembelajaran Mata Kuliah" : "Pemanfaatan Diatom-AI mendukung Capaian Pembelajaran Mata Kuliah (CPMK) Protista poin 1, yaitu mahasiswa menguasai konsep tentang struktur morfologi, fisiologi,  reproduksi,  sistematika, dan peranan organisme kelompok Protista mirip tumbuhan.",
+    "Sub- Capaian Pembelajaran Mata Kuliah" : 
+"""Pemanfaatan Diatom-AI mendukung pencapaian Sub-CPMK
+1.1 Menjelaskan karakteristik Protista mirip tumbuhan, mengklasifikasikan Protista mirip tumbuhan.
+1.2 Menjelaskan karakteristik dan kehidupan Protista mirip tumbuhan: Chlorophyta
+
+Materi esensial yang didukung melalui aplikasi ini meliputi karakteristik dan struktur diatom perifiton, fisiologi, reproduksi, dan siklus hidupnya, metode pencuplikan dan identifikasi spesies, serta keterkaitan komunitas diatom perifiton dengan parameter lingkungan perairan."""
+  };
 }

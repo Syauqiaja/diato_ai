@@ -70,17 +70,17 @@ class AppRoutes {
           GoRoute(
             path: AppInfoScreen.routePath,
             name: AppInfoScreen.routeName,
-            builder: (context, state) => const AppInfoScreen(),
+            builder: (context, state) => AppInfoScreen(),
           ),
           GoRoute(
             path: UsageGuideScreen.routePath,
             name: UsageGuideScreen.routeName,
-            builder: (context, state) => const UsageGuideScreen(),
+            builder: (context, state) => UsageGuideScreen(),
           ),
           GoRoute(
             path: DeveloperInfoScreen.routePath,
             name: DeveloperInfoScreen.routeName,
-            builder: (context, state) => const DeveloperInfoScreen(),
+            builder: (context, state) => DeveloperInfoScreen(),
           ),
         ],
       ),

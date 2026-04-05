@@ -4,6 +4,8 @@ import 'package:diato_ai/utils/extensions/context_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import 'widgets/info_section.dart';
+
 class DeveloperInfoScreen extends StatelessWidget {
   static const String routeName = 'developer-info';
   static const String routePath = 'developer-info';
@@ -36,20 +38,14 @@ class DeveloperInfoScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              _InfoSection(
-                label: 'Title',
-                content: 'Tim Pengembang Diato AI',
-              ),
-              vSpace(16),
-              _InfoSection(
+              InfoSection(
                 label: 'Last Updated',
                 content: 'April 2026',
               ),
               vSpace(16),
-              _InfoSection(
-                label: 'Content',
-                content:
-                    'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.\n\nDuis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nSed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.',
+              InfoSection(
+                label: null,
+                content: _content
               ),
             ],
           ),
@@ -59,43 +55,16 @@ class DeveloperInfoScreen extends StatelessWidget {
   }
 }
 
-class _InfoSection extends StatelessWidget {
-  final String label;
-  final String content;
+const String _content = 
+"""Diatom-AI dikembangkan oleh tim akademisi bidang pendidikan biologi dan ekologi perairan dari Universitas Negeri Malang. 
+Tim pengembang terdiri dari
 
-  const _InfoSection({
-    required this.label,
-    required this.content,
-  });
+Pengembang utama : 
+- M. Iqbal Najib Fahmi, M.Pd,
 
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: AppTheme.canvasColor,
-      borderRadius: BorderRadius.circular(16),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              label,
-              style: context.textTheme.titleMedium?.copyWith(
-                color: context.colorScheme.primary,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            vSpace(8),
-            Text(
-              content,
-              style: context.textTheme.bodyMedium?.copyWith(
-                color: context.colorScheme.primary.withOpacity(0.8),
-                height: 1.5,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
+Pembimbing akademik dan peneliti:
+- Prof. Dr. Susriyati Mahanal, 
+- M.Pd, Prof. Dr. Siti Zubaidah, M.Pd, 
+- Prof. Dr. Ibrohim, M.Si.
+
+Pengembangan aplikasi ini didasarkan pada penelitian tentang komunitas diatom Sungai Brantas serta integrasi teknologi kecerdasan buatan untuk mendukung pembelajaran, penelitian, dan pemantauan kualitas perairan berbasis bioindikator.""";
