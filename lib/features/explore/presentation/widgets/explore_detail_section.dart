@@ -3,6 +3,7 @@ import 'package:diato_ai/features/explore/presentation/cubits/cubit/course_detai
 import 'package:diato_ai/features/shared/widgets/linear_line.dart';
 import 'package:diato_ai/features/shared/widgets/spacings.dart';
 import 'package:diato_ai/utils/extensions/context_extensions.dart';
+import 'package:easy_image_viewer/easy_image_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
@@ -30,23 +31,19 @@ class _ExploreDetailSectionState extends State<ExploreDetailSection> {
         int courseNumber = 0;
         bool isLoading = state is CourseDetailLoading;
         String? errorMessage;
-    
+
         if (isLoading) {
           return Container(
             decoration: BoxDecoration(color: AppTheme.canvasColor, borderRadius: BorderRadius.circular(32)),
             padding: EdgeInsets.all(24),
-            child: Center(
-              child: CircularProgressIndicator(
-                color: textColor,
-              ),
-            ),
+            child: Center(child: CircularProgressIndicator(color: textColor)),
           );
         }
-    
+
         if (state is CourseDetailError) {
           errorMessage = state.message;
         }
-    
+
         if (state is CourseDetailData) {
           final detail = state.courseDetail;
           title = detail.title;
@@ -54,7 +51,7 @@ class _ExploreDetailSectionState extends State<ExploreDetailSection> {
           content = detail.content;
           courseNumber = detail.id;
         }
-    
+
         return Container(
           decoration: BoxDecoration(color: AppTheme.canvasColor, borderRadius: BorderRadius.circular(32)),
           padding: EdgeInsets.all(24),
@@ -116,7 +113,71 @@ class _ExploreDetailSectionState extends State<ExploreDetailSection> {
                     ),
                   ),
                 vSpace(24),
-                if (content != null) HtmlWidget(content),
+                if (content != null)
+                  HtmlWidget(
+                    content,
+                    enableCaching: false,
+                    renderMode: RenderMode.column,
+                    buildAsync: true,
+                    customWidgetBuilder: (element) {
+                      switch (element.localName) {
+                        case "h1":
+                          return Padding(
+                            padding: const EdgeInsets.only(top: 8, bottom: 4, left: 8),
+                            child: Text(
+                              element.text,
+                              style: TextStyle(fontSize: 22, height: 1, fontFamily: "AndersonGrotesk", fontWeight: FontWeight.w400),
+                            ),
+                          );
+                        case "h2":
+                          return Padding(
+                            padding: const EdgeInsets.only(top: 20, bottom: 4, left: 8),
+                            child: Text(
+                              element.text,
+                              style: TextStyle(fontSize: 18, height: 1, fontFamily: "AndersonGrotesk", fontWeight: FontWeight.w600),
+                            ),
+                          );
+                        case "h3":
+                          return Padding(
+                            padding: const EdgeInsets.only(top: 8, left: 8),
+                            child: Text(
+                              element.text,
+                              style: TextStyle(fontSize: 16, height: 1, fontFamily: "AndersonGrotesk", fontWeight: FontWeight.w600),
+                            ),
+                          );
+                        case "h4":
+                          return Padding(
+                            padding: const EdgeInsets.only(top: 8, left: 8),
+                            child: Text(
+                              element.text,
+                              style: TextStyle(fontSize: 14, height: 1, fontFamily: "AndersonGrotesk", fontWeight: FontWeight.w600),
+                            ),
+                          );
+                        case "h5":
+                          return Padding(
+                            padding: const EdgeInsets.only(top: 8, left: 8),
+                            child: Text(
+                              element.text,
+                              style: TextStyle(fontSize: 12, height: 1, fontFamily: "AndersonGrotesk", fontWeight: FontWeight.w600),
+                            ),
+                          );
+                        case "img":
+                          final url = element.attributes['src'] ?? "";
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            child: GestureDetector(
+                              onTap: () {
+                                showImageViewerPager(context, SingleImageProvider(NetworkImage(url)), immersive: false, useSafeArea: true, infinitelyScrollable: false, backgroundColor: Colors.black54);
+                              },
+                              child: Image.network(url, fit: BoxFit.contain),
+                            ),
+                          );
+                        default:
+                          return null;
+                      }
+                    },
+                    textStyle: TextStyle(fontFamily: "georgia", height: 1.4, color: Theme.of(context).textTheme.bodyLarge?.color, fontWeight: FontWeight.w500),
+                  ),
               ],
             ),
           ),

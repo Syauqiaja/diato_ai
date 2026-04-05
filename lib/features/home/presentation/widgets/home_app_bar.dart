@@ -3,13 +3,13 @@ import 'package:diato_ai/features/shared/widgets/profile_button.dart';
 import 'package:diato_ai/features/shared/widgets/spacings.dart';
 import 'package:diato_ai/utils/extensions/context_extensions.dart';
 import 'package:flutter/material.dart';
+import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
 import '../../../../core/assets/assets.dart';
 
 class HomeAppBar extends StatefulWidget {
   final ScrollController _scrollController;
-  const HomeAppBar({super.key, required ScrollController scrollController})
-    : _scrollController = scrollController;
+  const HomeAppBar({super.key, required ScrollController scrollController}) : _scrollController = scrollController;
 
   @override
   State<HomeAppBar> createState() => _HomeAppBarState();
@@ -22,16 +22,28 @@ class _HomeAppBarState extends State<HomeAppBar> {
   final double expandedHeight = 450.0;
   final double collapsedHeight = 64.0;
 
+  late YoutubePlayerController _youtubeController;
+
   ScrollController get _scrollController => widget._scrollController;
 
   @override
   void initState() {
     super.initState();
+
+    _youtubeController = YoutubePlayerController.fromVideoId(
+      videoId: 'Ygty9HxhFK4',
+      autoPlay: false,
+      params: const YoutubePlayerParams(showControls: true, mute: false, showFullscreenButton: true, loop: false, origin: 'https://www.youtube-nocookie.com'),
+    );
+    // Seek to 3:36 after controller is ready
+    _youtubeController.seekTo(seconds: 216);
+
     _scrollController.addListener(_onScroll);
   }
 
   @override
   void dispose() {
+    _youtubeController.close();
     _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
     super.dispose();
@@ -41,10 +53,8 @@ class _HomeAppBarState extends State<HomeAppBar> {
     final double scrollOffset = _scrollController.offset;
 
     // Calculate the range for the title to fade in
-    final double fadeStart =
-        (expandedHeight - collapsedHeight) * 0.5; // Start fading at 50% scroll
-    final double fadeEnd =
-        expandedHeight - collapsedHeight; // Fully opaque when collapsed
+    final double fadeStart = (expandedHeight - collapsedHeight) * 0.5; // Start fading at 50% scroll
+    final double fadeEnd = expandedHeight - collapsedHeight; // Fully opaque when collapsed
 
     double opacity = 0.0;
     if (scrollOffset >= fadeStart && scrollOffset <= fadeEnd) {
@@ -64,7 +74,7 @@ class _HomeAppBarState extends State<HomeAppBar> {
   Widget build(BuildContext context) {
     return SliverAppBar(
       pinned: true,
-      expandedHeight: 520.0,
+      expandedHeight: 550.0,
       collapsedHeight: collapsedHeight,
       leadingWidth: 0,
       elevation: 0,
@@ -76,15 +86,13 @@ class _HomeAppBarState extends State<HomeAppBar> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("Diato AI"),
-                Text(
-                  "We owe so much to diatoms!",
-                  style: context.textTheme.bodySmall?.copyWith(color: Colors.white),
-                ),
+                Text("Diatom-AI"),
+                vSpace(4),
+                LinearLine(width: 100)
               ],
             ),
             Spacer(),
-            ProfileButton()
+            ProfileButton(),
           ],
         ),
       ),
@@ -93,11 +101,7 @@ class _HomeAppBarState extends State<HomeAppBar> {
       actionsPadding: EdgeInsets.symmetric(horizontal: 0),
       flexibleSpace: FlexibleSpaceBar(
         titlePadding: EdgeInsets.only(top: 32),
-        stretchModes: [
-          StretchMode.blurBackground,
-          StretchMode.fadeTitle,
-          StretchMode.zoomBackground,
-        ],
+        stretchModes: [StretchMode.blurBackground, StretchMode.fadeTitle, StretchMode.zoomBackground],
         collapseMode: CollapseMode.parallax,
         centerTitle: false,
         expandedTitleScale: 1.1,
@@ -113,63 +117,26 @@ class _HomeAppBarState extends State<HomeAppBar> {
                       Container(
                         height: 300,
                         padding: const EdgeInsets.all(8.0),
-                        child: Opacity(
-                          opacity: 0.2,
-                          child: Image.asset(Assets.cellBg),
-                        ),
+                        child: Opacity(opacity: 0.2, child: Image.asset(Assets.cellBg)),
                       ),
                       Column(
-                        spacing: 16,
+                        spacing: 8,
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           vSpace(24),
                           SizedBox(
                             height: kToolbarHeight,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                ProfileButton()
-                              ],
-                            ),
+                            child: Row(mainAxisAlignment: MainAxisAlignment.end, crossAxisAlignment: CrossAxisAlignment.start, children: [ProfileButton()]),
                           ),
                           _buildTitle(context),
                           Container(
                             margin: EdgeInsets.symmetric(vertical: 16),
                             height: 200,
-                            decoration: BoxDecoration(
-                              color: Colors.white10,
-                              borderRadius: BorderRadius.circular(16),
-                            ),
+                            decoration: BoxDecoration(color: Colors.white10, borderRadius: BorderRadius.circular(16)),
                             clipBehavior: Clip.hardEdge,
-                            child: Stack(
-                              alignment: Alignment.center,
-                              children: [
-                                Image.asset(
-                                  Assets.diatomi,
-                                  fit: BoxFit.cover,
-                                  width: double.infinity,
-                                ),
-                                Text(
-                                  "Diatom",
-                                  style: context.textTheme.displayMedium
-                                      ?.copyWith(color: Colors.white),
-                                ),
-                              ],
-                            ),
+                            child: YoutubePlayer(controller: _youtubeController, aspectRatio: 16 / 9),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8.0,
-                            ),
-                            child: Text(
-                              "They help us make toothpaste, wall paint, and water filters - and they're responsible for some of the air you're breathing right now!",
-                              style: context.textTheme.bodyMedium?.copyWith(
-                                height: 1.1,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
+                          _buildInfoSection(context),
                         ],
                       ),
                     ],
@@ -189,21 +156,35 @@ class _HomeAppBarState extends State<HomeAppBar> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            "Welcome to",
-            style: context.textTheme.bodyLarge?.copyWith(color: Colors.white),
-          ),
-          Text(
-            "Diato-AI!",
-            style: context.textTheme.displayLarge?.copyWith(
-              color: Colors.white,
-            ),
-          ),
+          Text("Welcome to", style: context.textTheme.bodyLarge?.copyWith(color: Colors.white)),
+          Text("Diatom-AI!", style: context.textTheme.displayLarge?.copyWith(color: Colors.white)),
           const SizedBox(height: 8),
           LinearLine(),
+          Text("Diatom Identification and Analysis Tool for Monitoring based on Artificial Intelligence", style: context.textTheme.bodySmall?.copyWith(color: Colors.white),),
+        ],
+      ),
+    );
+  }
+
+
+  Widget _buildInfoSection(BuildContext context) {
+    final color = Colors.white;
+    return Container(
+      padding: EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: color,
+          width: 1,
+        ),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
           Text(
-            "We owe so much to diatoms!",
-            style: context.textTheme.bodySmall?.copyWith(color: Colors.white),
+            "Diatom dimanfaatkan dalam pembuatan pasta gigi, insektisida organik, suplemen kesehatan, dan bioindikator, serta berkontribusi besar terhadap oksigen yang kita hirup setiap hari.",
+            style: context.textTheme.bodyMedium?.copyWith(height: 1.5, color: color,),
           ),
         ],
       ),
