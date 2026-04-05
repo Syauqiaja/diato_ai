@@ -6,6 +6,10 @@ import 'package:diato_ai/features/explore/presentation/explore_screen.dart';
 import 'package:diato_ai/features/home/presentation/home_screen.dart';
 import 'package:diato_ai/features/map/presentation/map_screen.dart';
 import 'package:diato_ai/features/scanner/presentation/scanner_screen.dart';
+import 'package:diato_ai/features/setting/presentation/app_info_screen.dart';
+import 'package:diato_ai/features/setting/presentation/developer_info_screen.dart';
+import 'package:diato_ai/features/setting/presentation/settings_screen.dart';
+import 'package:diato_ai/features/setting/presentation/usage_guide_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -57,6 +61,28 @@ class AppRoutes {
           final courseId = int.parse(state.pathParameters['courseId']!);
           return CourseDetailScreen(courseId: courseId);
         },
+      ),
+      GoRoute(
+        path: SettingsScreen.routePath,
+        name: SettingsScreen.routeName,
+        builder: (context, state) => const SettingsScreen(),
+        routes: [
+          GoRoute(
+            path: AppInfoScreen.routePath,
+            name: AppInfoScreen.routeName,
+            builder: (context, state) => const AppInfoScreen(),
+          ),
+          GoRoute(
+            path: UsageGuideScreen.routePath,
+            name: UsageGuideScreen.routeName,
+            builder: (context, state) => const UsageGuideScreen(),
+          ),
+          GoRoute(
+            path: DeveloperInfoScreen.routePath,
+            name: DeveloperInfoScreen.routeName,
+            builder: (context, state) => const DeveloperInfoScreen(),
+          ),
+        ],
       ),
     ],
     errorBuilder: (context, state) => Scaffold(body: Center(child: Text('Page not found \n${state.error}'))),

@@ -1,3 +1,4 @@
+import 'package:diato_ai/features/setting/presentation/settings_screen.dart';
 import 'package:diato_ai/features/shared/widgets/linear_line.dart';
 import 'package:diato_ai/features/shared/widgets/profile_button.dart';
 import 'package:diato_ai/features/shared/widgets/spacings.dart';
@@ -183,7 +184,7 @@ class _HomeAppBarState extends State<HomeAppBar> {
       foregroundColor: AppButtonColorType.primary,
       padding: EdgeInsets.symmetric(horizontal: 24, vertical: 8),
       onPressed: () {
-        // context.pushNamed(LoginScreen.routeName);
+        SettingsScreen.push(context);
       },
       child: Row(children: [FaIcon(FontAwesomeIcons.userGraduate, size: 20), hSpace(8), Text('About Diatom-AI')]),
     );
