@@ -68,9 +68,12 @@ final class ScannerRepositoryImpl extends ScannerRepository {
     }
   }
 
+  /// The API only accepts jpeg/jpg/png. Gallery imports can arrive with other
+  /// extensions (heic, webp), so anything unknown is declared as jpeg — the
+  /// picker re-encodes to JPEG when it resizes.
   String _subtype(String path) {
     final ext = p.extension(path).toLowerCase().replaceFirst('.', '');
-    return ext == 'jpg' || ext.isEmpty ? 'jpeg' : ext;
+    return ext == 'png' ? 'png' : 'jpeg';
   }
 
   String _message(DioException e) {

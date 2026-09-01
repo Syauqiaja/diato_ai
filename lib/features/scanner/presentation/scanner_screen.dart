@@ -213,9 +213,14 @@ class _ScannerScreenState extends State<ScannerScreen> {
     setState(() => _isCapturing = true);
 
     try {
+      // The classifier pads the longest side down to 224px, and Laravel
+      // rejects anything over 4 MB, so a full-resolution gallery photo is both
+      // wasted bytes and a likely 422. Downscale before uploading.
       final picked = await ImagePicker().pickImage(
         source: ImageSource.gallery,
-        imageQuality: 95,
+        maxWidth: 1600,
+        maxHeight: 1600,
+        imageQuality: 90,
       );
       if (picked == null || !mounted) return;
       context.pushNamed(
