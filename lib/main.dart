@@ -5,6 +5,8 @@ import 'package:diato_ai/features/courses/presentation/cubit/course_list_cubit.d
 import 'package:diato_ai/features/explore/presentation/cubits/cubit/course_detail_cubit.dart';
 import 'package:diato_ai/features/explore/presentation/cubits/explore_index/explore_index_cubit.dart';
 import 'package:diato_ai/features/home/presentation/cubit/article_cubit.dart';
+import 'package:diato_ai/features/map/presentation/cubit/station_detail_cubit.dart';
+import 'package:diato_ai/features/map/presentation/cubit/station_list_cubit.dart';
 import 'package:diato_ai/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -31,6 +33,8 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => CourseListCubit(getIt())),
         BlocProvider(create: (context) => ExploreIndexCubit(getIt())),
         BlocProvider(create: (context) => CourseDetailCubit(getIt())),
+        BlocProvider(create: (context) => StationListCubit(getIt())),
+        BlocProvider(create: (context) => StationDetailCubit(getIt())),
       ],
       child: MaterialApp.router(title: 'Diato AI', theme: AppTheme.lightTheme, routerConfig: AppRoutes.router, debugShowCheckedModeBanner: false),
     );

@@ -5,6 +5,8 @@ import 'package:diato_ai/features/auth/register/data/register_repository_impl.da
 import 'package:diato_ai/features/courses/data/repositories/course_repository_impl.dart';
 import 'package:diato_ai/features/courses/domain/repositories/course_repository.dart';
 import 'package:diato_ai/features/home/data/repositories/home_repository_impl.dart';
+import 'package:diato_ai/features/map/data/repositories/station_repository_impl.dart';
+import 'package:diato_ai/features/map/domain/repositories/station_repository.dart';
 import 'package:diato_ai/features/home/domain/repository/home_repository.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -28,4 +30,5 @@ Future<void> setupInjection() async {
   );
   getIt.registerSingleton<HomeRepository>(HomeRepositoryImpl(getIt()));
   getIt.registerSingleton<CourseRepository>(CourseRepositoryImpl(getIt()));
+  getIt.registerSingleton<StationRepository>(StationRepositoryImpl(getIt()));
 }

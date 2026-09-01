@@ -15,7 +15,7 @@ class DioClient {
   DioClient._internal() {
     dio = Dio(
       BaseOptions(
-        baseUrl: 'http://202.10.38.33/api',
+        baseUrl: 'https://diato-ai.fajrsyauqi.com/api',
         connectTimeout: const Duration(seconds: 30),
         receiveTimeout: const Duration(seconds: 30),
         sendTimeout: const Duration(seconds: 30),
