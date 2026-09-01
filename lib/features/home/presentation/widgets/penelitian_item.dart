@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:diato_ai/core/assets/assets.dart';
 import 'package:diato_ai/utils/extensions/context_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -34,8 +35,11 @@ class PenelitianItem extends StatelessWidget {
           height: 200,
           decoration: BoxDecoration(
             image: DecorationImage(
-              image: NetworkImage(cover),
+              // The api can return an empty cover; NetworkImage would then
+              // throw on an unparseable url instead of just failing to load.
+              image: cover.isEmpty ? const AssetImage(Assets.diatomi) as ImageProvider : NetworkImage(cover),
               fit: BoxFit.cover,
+              onError: (_, __) {},
             ),
           ),
           child: InkWell(

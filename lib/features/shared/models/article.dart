@@ -1,3 +1,5 @@
+import 'package:diato_ai/core/assets/constants.dart';
+
 final class Article {
   final int id;
   final String title;
@@ -8,7 +10,7 @@ final class Article {
   Article({required this.id, required this.title, required this.cover, required this.url, this.overview = ''});
 
   factory Article.fromJson(Map<String, dynamic> json) {
-    return Article(id: json['id'] as int, title: json['title'] as String, cover: json['cover'] as String, url: json['url'] as String, overview: json['overview'] as String? ?? '');
+    return Article(id: json['id'] as int, title: json['title'] as String, cover: resolveAssetUrl(json['cover'] as String?) ?? '', url: json['url'] as String, overview: json['overview'] as String? ?? '');
   }
 
   Map<String, dynamic> toJson() {

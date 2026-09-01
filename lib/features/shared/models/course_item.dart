@@ -1,3 +1,5 @@
+import 'package:diato_ai/core/assets/constants.dart';
+
 final class CourseItem {
   final int id;
   final String title;
@@ -9,7 +11,7 @@ final class CourseItem {
     return CourseItem(
       id: json['id'] as int,
       title: json['title'] as String,
-      cover: json['cover'] as String,
+      cover: resolveAssetUrl(json['cover'] as String?) ?? '',
     );
   }
 
