@@ -6,6 +6,7 @@ import 'package:diato_ai/features/scanner/presentation/widgets/scanner_camera_se
 import 'package:diato_ai/features/scanner/presentation/widgets/scanner_top_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ScannerScreen extends StatefulWidget {
   static const String routeName = 'scanner';
@@ -24,6 +25,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
   List<CameraDescription> _cameras = [];
   int _currentCameraIndex = 0;
   FlashMode _flashMode = FlashMode.off;
+  bool _isCapturing = false;
 
   @override
   void initState() {
@@ -170,6 +172,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
               onRotateCamera: _rotateCamera,
               onToggleFlash: _toggleFlash,
               onCapture: _onCapture,
+              onPickFromGallery: _onPickFromGallery,
               flashMode: _flashMode,
             ),
           ],
@@ -178,7 +181,54 @@ class _ScannerScreenState extends State<ScannerScreen> {
     );
   }
 
-  void _onCapture() {
-    context.pushNamed(ScannerDetailScreen.routeName);
+  Future<void> _onCapture() async {
+    final controller = _cameraController;
+    if (controller == null || !controller.value.isInitialized) return;
+
+    // Guard against a double tap firing two captures and two uploads.
+    if (_isCapturing) return;
+    setState(() => _isCapturing = true);
+
+    try {
+      final photo = await controller.takePicture();
+      if (!mounted) return;
+      context.pushNamed(
+        ScannerDetailScreen.routeName,
+        extra: photo.path,
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Gagal mengambil gambar: $e')),
+      );
+    } finally {
+      if (mounted) setState(() => _isCapturing = false);
+    }
+  }
+
+  /// Microscope photographs usually come off a dedicated camera rather than the
+  /// phone in hand, so allow picking an existing image too.
+  Future<void> _onPickFromGallery() async {
+    if (_isCapturing) return;
+    setState(() => _isCapturing = true);
+
+    try {
+      final picked = await ImagePicker().pickImage(
+        source: ImageSource.gallery,
+        imageQuality: 95,
+      );
+      if (picked == null || !mounted) return;
+      context.pushNamed(
+        ScannerDetailScreen.routeName,
+        extra: picked.path,
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Gagal memilih gambar: $e')),
+      );
+    } finally {
+      if (mounted) setState(() => _isCapturing = false);
+    }
   }
 }

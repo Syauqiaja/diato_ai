@@ -50,7 +50,14 @@ class AppRoutes {
         path: ScannerScreen.routePath,
         name: ScannerScreen.routeName,
         builder: (context, state) => const ScannerScreen(),
-        routes: [GoRoute(path: ScannerDetailScreen.routePath, name: ScannerDetailScreen.routeName, builder: (context, state) => const ScannerDetailScreen())],
+        routes: [
+          GoRoute(
+            path: ScannerDetailScreen.routePath,
+            name: ScannerDetailScreen.routeName,
+            builder: (context, state) =>
+                ScannerDetailScreen(imagePath: state.extra as String?),
+          ),
+        ],
       ),
       GoRoute(path: LoginScreen.routePath, name: LoginScreen.routeName, builder: (context, state) => LoginScreen()),
       GoRoute(path: RegisterScreen.routePath, name: RegisterScreen.routeName, builder: (context, state) => RegisterScreen()),

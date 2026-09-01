@@ -9,13 +9,16 @@ class ScannerBottomAppBar extends StatelessWidget {
   final VoidCallback onRotateCamera;
   final VoidCallback onToggleFlash;
   final VoidCallback onCapture;
+  final VoidCallback onPickFromGallery;
   final FlashMode flashMode;
-  
+
   const ScannerBottomAppBar({
     super.key,
     required this.onRotateCamera,
     required this.onToggleFlash,
-    required this.flashMode, required this.onCapture,
+    required this.flashMode,
+    required this.onCapture,
+    required this.onPickFromGallery,
   });
 
   @override
@@ -93,7 +96,9 @@ class ScannerBottomAppBar extends StatelessWidget {
     onRotateCamera();
   }
 
-  void _onTapGallery() {}
+  void _onTapGallery() {
+    onPickFromGallery();
+  }
   void _onTapInfo() {}
 }
 

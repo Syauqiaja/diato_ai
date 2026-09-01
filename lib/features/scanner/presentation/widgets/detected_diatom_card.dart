@@ -66,7 +66,7 @@ class DetectedDiatomCard extends StatelessWidget {
           ),
         ),
         subtitle: Text(
-          diatom.type,
+          diatom.genus != null ? 'Genus ${diatom.genus}' : 'Diatom',
           style: context.textTheme.bodySmall?.copyWith(
             color: Colors.grey[600],
           ),
@@ -94,36 +94,39 @@ class DetectedDiatomCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               vSpace(8),
-              // Type badge
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 6,
-                ),
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: Colors.blue[300]!,
+              // Genus badge
+              if (diatom.genus != null)
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 6,
                   ),
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Text(
-                  '${diatom.type} Diatom',
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.blue[900],
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.blue[300]!,
+                    ),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Text(
+                    'Genus ${diatom.genus}',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.blue[900],
+                    ),
                   ),
                 ),
-              ),
-              vSpace(16),
-              // Description
-              Text(
-                diatom.description,
-                style: context.textTheme.bodyMedium?.copyWith(
-                  color: Colors.grey[700],
+              if (diatom.genus != null) vSpace(16),
+              // Description, when the label resolved to a catalogue entry.
+              if (diatom.description != null) ...[
+                Text(
+                  diatom.description!,
+                  style: context.textTheme.bodyMedium?.copyWith(
+                    color: Colors.grey[700],
+                  ),
                 ),
-              ),
-              vSpace(16),
+                vSpace(16),
+              ],
               // Confidence level
               Container(
                 padding: const EdgeInsets.all(12),
@@ -167,8 +170,9 @@ class DetectedDiatomCard extends StatelessWidget {
                 ),
               ),
               vSpace(16),
-              // Additional information
-              Container(
+              // Additional information. Hidden entirely when the species is not
+              // in the catalogue yet, rather than showing a column of dashes.
+              if (diatom.hasDetails) Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
                   color: Colors.grey[50],
@@ -200,6 +204,19 @@ class DetectedDiatomCard extends StatelessWidget {
                     _buildInfoRow(context, 'Ukuran', diatom.size),
                     vSpace(6),
                     _buildInfoRow(context, 'Bentuk', diatom.shape),
+                    if (diatom.imageUrl != null) ...[
+                      vSpace(12),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: Image.network(
+                          diatom.imageUrl!,
+                          height: 120,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+                        ),
+                      ),
+                    ],
                   ],
                 ),
               ),
@@ -210,7 +227,7 @@ class DetectedDiatomCard extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoRow(BuildContext context, String label, String value) {
+  Widget _buildInfoRow(BuildContext context, String label, String? value) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -227,9 +244,10 @@ class DetectedDiatomCard extends StatelessWidget {
         hSpace(8),
         Expanded(
           child: Text(
-            value,
+            value ?? 'Belum tersedia',
             style: context.textTheme.bodySmall?.copyWith(
-              color: Colors.grey[800],
+              color: value == null ? Colors.grey[500] : Colors.grey[800],
+              fontStyle: value == null ? FontStyle.italic : FontStyle.normal,
             ),
           ),
         ),
