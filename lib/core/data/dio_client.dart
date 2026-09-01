@@ -1,4 +1,6 @@
 import 'package:dio/dio.dart';
+import 'package:diato_ai/features/auth/core/auth_core.dart';
+import 'package:get_it/get_it.dart';
 
 /// A configured Dio client for making HTTP requests.
 ///
@@ -17,11 +19,32 @@ class DioClient {
       BaseOptions(
         baseUrl: 'https://diato-ai.fajrsyauqi.com/api',
         connectTimeout: const Duration(seconds: 30),
-        receiveTimeout: const Duration(seconds: 30),
-        sendTimeout: const Duration(seconds: 30),
+        // Uploading a photo and waiting on CNN inference takes longer than a
+        // plain JSON read, so allow more headroom than the default.
+        receiveTimeout: const Duration(seconds: 60),
+        sendTimeout: const Duration(seconds: 60),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
+        },
+      ),
+    );
+
+    // Attach the stored bearer token to every request.
+    //
+    // Without this the token saved at login is never sent, so any endpoint
+    // behind `auth:sanctum` — including POST /scans — answers 401.
+    dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) async {
+          // Resolved lazily: AuthCore is registered after Dio in the DI setup.
+          if (GetIt.instance.isRegistered<AuthCore>()) {
+            final token = await GetIt.instance<AuthCore>().getToken();
+            if (token != null && token.isNotEmpty) {
+              options.headers['Authorization'] = 'Bearer $token';
+            }
+          }
+          return handler.next(options);
         },
       ),
     );
