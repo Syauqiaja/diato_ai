@@ -154,7 +154,7 @@ void main() {
     await cubit.loadCatalogue();
 
     cubit.addSpecies(_unscored);
-    expect(cubit.state.result.di, 0);
+    expect(cubit.state.result.di, 5);
 
     await cubit.save();
 

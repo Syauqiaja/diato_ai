@@ -103,11 +103,16 @@ class BrdiResult extends Equatable {
 /// zero on both sides of the division, so it moves nothing. A count of zero
 /// works out the same way.
 ///
-/// When nothing counted carries weight the index is zero, not absent: the
-/// reading still describes a real sample and can be shown and saved. Only an
-/// empty list has no index at all.
+/// When nothing counted carries weight there is no evidence of pollution to
+/// weigh, so the index sits at the top of the scale rather than being absent:
+/// the reading still describes a real sample and can be shown and saved. Only
+/// an empty list has no index at all.
 class BrdiCalculator {
   const BrdiCalculator._();
+
+  /// Where the index sits when nothing counted carries any weight: the top of
+  /// the 1–5 scale, since nothing found points to poor water.
+  static const double _noEvidenceIndex = 5;
 
   static BrdiResult calculate(List<SpeciesEntry> entries) {
     if (entries.isEmpty) {
@@ -133,7 +138,7 @@ class BrdiCalculator {
     }
 
     return BrdiResult(
-      di: denominator > 0 ? numerator / denominator : 0,
+      di: denominator > 0 ? numerator / denominator : _noEvidenceIndex,
       contributions: contributions,
     );
   }

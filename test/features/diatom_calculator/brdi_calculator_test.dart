@@ -113,15 +113,27 @@ void main() {
       expect(result.contributions.last.weight, 0);
     });
 
-    test('gives an index of zero when nothing counted carries weight', () {
+    test('tops out the scale when nothing counted carries weight', () {
       final result = BrdiCalculator.calculate([
         SpeciesEntry(species: _species('Melosira granulata', id: 1), count: 4),
       ]);
 
-      // Still a real result: the reading can be shown and saved.
-      expect(result.di, 0);
-      expect(result.category, BrdiCategory.sangatBuruk);
+      // Nothing found points to poor water, and it is still a real result:
+      // the reading can be shown and saved.
+      expect(result.di, 5);
+      expect(result.category, BrdiCategory.sangatBaik);
       expect(result.contributions, hasLength(1));
+    });
+
+    test('tops out the scale when every count is zero', () {
+      final result = BrdiCalculator.calculate([
+        SpeciesEntry(
+          species: _species('Cocconeis placentula', sensitivity: 1, indicator: 3, id: 1),
+          count: 0,
+        ),
+      ]);
+
+      expect(result.di, 5);
     });
 
     test('has no index at all until something is counted', () {
