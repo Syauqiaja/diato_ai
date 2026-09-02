@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:diato_ai/core/device/device_installation_id.dart';
 import 'package:diato_ai/features/auth/core/auth_core.dart';
 import 'package:get_it/get_it.dart';
 
@@ -44,6 +45,15 @@ class DioClient {
               options.headers['Authorization'] = 'Bearer $token';
             }
           }
+
+          // Identify the installation for endpoints that belong to a device
+          // rather than an account — saved calculator readings are kept per
+          // device because the calculator never asks anyone to sign in.
+          if (GetIt.instance.isRegistered<DeviceInstallationId>()) {
+            options.headers['X-Device-Id'] =
+                await GetIt.instance<DeviceInstallationId>().get();
+          }
+
           return handler.next(options);
         },
       ),

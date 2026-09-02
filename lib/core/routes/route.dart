@@ -1,4 +1,5 @@
-import 'package:diato_ai/features/analytics/presentation/anaylitcs_screen.dart';
+import 'package:diato_ai/features/diatom_calculator/presentation/diatom_calculator_screen.dart';
+import 'package:diato_ai/features/diatom_calculator/presentation/saved_calculations_screen.dart';
 import 'package:diato_ai/features/app_layout/app_layout.dart';
 import 'package:diato_ai/features/auth/login/presentation/login_screen.dart';
 import 'package:diato_ai/features/auth/register/presentation/register_screen.dart';
@@ -42,7 +43,20 @@ class AppRoutes {
             routes: [GoRoute(path: MapScreen.routePath, name: MapScreen.routeName, builder: (context, state) => const MapScreen())],
           ),
           StatefulShellBranch(
-            routes: [GoRoute(path: AnaylitcsScreen.routePath, name: AnaylitcsScreen.routeName, builder: (context, state) => const AnaylitcsScreen())],
+            routes: [
+              GoRoute(
+                path: DiatomCalculatorScreen.routePath,
+                name: DiatomCalculatorScreen.routeName,
+                builder: (context, state) => const DiatomCalculatorScreen(),
+                routes: [
+                  GoRoute(
+                    path: SavedCalculationsScreen.routePath,
+                    name: SavedCalculationsScreen.routeName,
+                    builder: (context, state) => const SavedCalculationsScreen(),
+                  ),
+                ],
+              ),
+            ],
           ),
         ],
       ),

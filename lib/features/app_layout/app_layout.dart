@@ -83,8 +83,8 @@ class _AppLayoutState extends State<AppLayout> {
                             onTap: () => _onItemTapped(2),
                           ),
                           _NavBarItem(
-                            icon: FontAwesomeIcons.clockRotateLeft,
-                            label: 'History',
+                            icon: FontAwesomeIcons.calculator,
+                            label: 'Calculator',
                             isSelected: widget.child.currentIndex == 3,
                             onTap: () => _onItemTapped(3),
                           ),
