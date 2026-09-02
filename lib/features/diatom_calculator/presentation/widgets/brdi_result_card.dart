@@ -52,7 +52,8 @@ class _BrdiResultCardState extends State<BrdiResultCard> {
           BrdiGauge(di: di),
           const SizedBox(height: 12),
           Text(
-            'Dihitung dari ${widget.result.contributions.length} spesies berskor.',
+            'Dihitung dari ${widget.result.contributions.length} spesies; '
+            'yang belum punya skor dihitung sebagai 0.',
             style: context.textTheme.bodySmall?.copyWith(
               color: category.foreground,
             ),
@@ -160,7 +161,7 @@ class _EmptyResult extends StatelessWidget {
           Icon(Icons.water_drop_outlined, color: Colors.grey[500], size: 28),
           const SizedBox(height: 8),
           Text(
-            'Tambahkan minimal satu spesies berskor untuk melihat indeks.',
+            'Tambahkan spesies untuk melihat indeks.',
             textAlign: TextAlign.center,
             style: context.textTheme.bodySmall?.copyWith(color: Colors.grey[600]),
           ),

@@ -136,7 +136,7 @@ class _DiatomCalculatorViewState extends State<_DiatomCalculatorView> {
                   if (state.entries.isNotEmpty) ...[
                     const SizedBox(height: 4),
                     Text(
-                      '${state.scoredCount} dari ${state.entries.length} spesies ikut dihitung.',
+                      '${state.scoredCount} dari ${state.entries.length} spesies punya skor.',
                       style: context.textTheme.bodySmall?.copyWith(
                         color: Colors.grey[600],
                       ),

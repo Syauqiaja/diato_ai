@@ -97,30 +97,33 @@ class BrdiResult extends Equatable {
 ///
 ///     DI = Σ(count × indicator × sensitivity) / Σ(count × indicator)
 ///
-/// Species missing either score, or counted zero times, carry no weight and
-/// are left out of both sums rather than being treated as a zero — averaging
-/// them in would drag the index toward the worst band for no reason.
+/// A missing score counts as zero rather than removing the species: every
+/// species the user counted stays in the reading and in the breakdown, and one
+/// with no scores simply carries no weight — a zero indicator makes its term
+/// zero on both sides of the division, so it moves nothing. A count of zero
+/// works out the same way.
+///
+/// When nothing counted carries weight the index is zero, not absent: the
+/// reading still describes a real sample and can be shown and saved. Only an
+/// empty list has no index at all.
 class BrdiCalculator {
   const BrdiCalculator._();
 
   static BrdiResult calculate(List<SpeciesEntry> entries) {
-    final contributions = <BrdiContribution>[];
-
-    for (final entry in entries) {
-      final sensitivity = entry.species.sensitivity;
-      final indicator = entry.species.indicator;
-      if (sensitivity == null || indicator == null || entry.count <= 0) {
-        continue;
-      }
-      contributions.add(
-        BrdiContribution(
-          species: entry.species,
-          count: entry.count,
-          sensitivity: sensitivity,
-          indicator: indicator,
-        ),
-      );
+    if (entries.isEmpty) {
+      return const BrdiResult(di: null, contributions: []);
     }
+
+    final contributions = entries
+        .map(
+          (entry) => BrdiContribution(
+            species: entry.species,
+            count: entry.count < 0 ? 0 : entry.count,
+            sensitivity: entry.species.sensitivity ?? 0,
+            indicator: entry.species.indicator ?? 0,
+          ),
+        )
+        .toList();
 
     var numerator = 0;
     var denominator = 0;
@@ -130,7 +133,7 @@ class BrdiCalculator {
     }
 
     return BrdiResult(
-      di: denominator > 0 ? numerator / denominator : null,
+      di: denominator > 0 ? numerator / denominator : 0,
       contributions: contributions,
     );
   }

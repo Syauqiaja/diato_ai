@@ -190,7 +190,7 @@ class _CalculationCard extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           Text(
-            '${calculation.entries.length} spesies dicatat · $scored ikut dihitung',
+            '${calculation.entries.length} spesies dicatat · $scored punya skor',
             style: context.textTheme.bodySmall?.copyWith(
               color: category?.foreground,
             ),

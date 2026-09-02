@@ -35,7 +35,7 @@ void main() {
       expect(result.contributions, hasLength(2));
     });
 
-    test('excludes species with a null sensitivity', () {
+    test('counts a null sensitivity as zero, keeping the species in', () {
       final result = BrdiCalculator.calculate([
         SpeciesEntry(
           species: _species('Cocconeis placentula', sensitivity: 4, indicator: 2, id: 1),
@@ -47,11 +47,15 @@ void main() {
         ),
       ]);
 
-      expect(result.di, closeTo(4, 1e-9));
-      expect(result.contributions.map((c) => c.species.name), ['Cocconeis placentula']);
+      // (3*2*4 + 8*3*0) / (3*2 + 8*3) = 24 / 30
+      expect(result.di, closeTo(24 / 30, 1e-9));
+      expect(
+        result.contributions.map((c) => c.species.name),
+        ['Cocconeis placentula', 'Melosira granulata'],
+      );
     });
 
-    test('excludes species with a null indicator', () {
+    test('counts a null indicator as zero, so the species carries no weight', () {
       final result = BrdiCalculator.calculate([
         SpeciesEntry(
           species: _species('Cocconeis placentula', sensitivity: 4, indicator: 2, id: 1),
@@ -63,11 +67,36 @@ void main() {
         ),
       ]);
 
+      // The second species weighs 8*0 = 0, so it moves neither sum.
       expect(result.di, closeTo(4, 1e-9));
-      expect(result.contributions.map((c) => c.species.name), ['Cocconeis placentula']);
+      expect(result.contributions, hasLength(2));
+      expect(result.contributions.last.weight, 0);
+      expect(result.contributions.last.score, 0);
     });
 
-    test('excludes species whose count is zero or negative', () {
+    test('treats a zero score the same as a missing one', () {
+      final nullScores = BrdiCalculator.calculate([
+        SpeciesEntry(
+          species: _species('Cocconeis placentula', sensitivity: 4, indicator: 2, id: 1),
+          count: 3,
+        ),
+        SpeciesEntry(species: _species('Melosira granulata', id: 2), count: 8),
+      ]);
+      final zeroScores = BrdiCalculator.calculate([
+        SpeciesEntry(
+          species: _species('Cocconeis placentula', sensitivity: 4, indicator: 2, id: 1),
+          count: 3,
+        ),
+        SpeciesEntry(
+          species: _species('Melosira granulata', sensitivity: 0, indicator: 0, id: 2),
+          count: 8,
+        ),
+      ]);
+
+      expect(nullScores.di, zeroScores.di);
+    });
+
+    test('keeps a zero count in the breakdown at no weight', () {
       final result = BrdiCalculator.calculate([
         SpeciesEntry(
           species: _species('Cocconeis placentula', sensitivity: 4, indicator: 2, id: 1),
@@ -80,20 +109,26 @@ void main() {
       ]);
 
       expect(result.di, closeTo(4, 1e-9));
+      expect(result.contributions, hasLength(2));
+      expect(result.contributions.last.weight, 0);
+    });
+
+    test('gives an index of zero when nothing counted carries weight', () {
+      final result = BrdiCalculator.calculate([
+        SpeciesEntry(species: _species('Melosira granulata', id: 1), count: 4),
+      ]);
+
+      // Still a real result: the reading can be shown and saved.
+      expect(result.di, 0);
+      expect(result.category, BrdiCategory.sangatBuruk);
       expect(result.contributions, hasLength(1));
     });
 
-    test('returns a null index when nothing scoreable was entered', () {
+    test('has no index at all until something is counted', () {
       final empty = BrdiCalculator.calculate([]);
       expect(empty.di, isNull);
       expect(empty.category, isNull);
       expect(empty.contributions, isEmpty);
-
-      final unscored = BrdiCalculator.calculate([
-        SpeciesEntry(species: _species('Melosira granulata', id: 1), count: 4),
-      ]);
-      expect(unscored.di, isNull);
-      expect(unscored.category, isNull);
     });
   });
 

@@ -67,17 +67,15 @@ class _SpeciesEntryTileState extends State<SpeciesEntryTile> {
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                const SizedBox(height: 2),
-                Text(
-                  species.isScored
-                      ? 'Sensitivitas ${species.sensitivity} · indikator ${species.indicator}'
-                      : 'Belum punya skor — tidak dihitung',
-                  style: context.textTheme.bodySmall?.copyWith(
-                    color: species.isScored
-                        ? Colors.grey[600]
-                        : const Color(0xFF8A6A1F),
+                if (species.isScored) ...[
+                  const SizedBox(height: 2),
+                  Text(
+                    'Sensitivitas ${species.sensitivity} · indikator ${species.indicator}',
+                    style: context.textTheme.bodySmall?.copyWith(
+                      color: Colors.grey[600],
+                    ),
                   ),
-                ),
+                ],
               ],
             ),
           ),

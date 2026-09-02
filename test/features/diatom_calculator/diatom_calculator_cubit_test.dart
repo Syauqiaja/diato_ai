@@ -87,7 +87,7 @@ void main() {
     expect(cubit.state.result.di, closeTo(155 / 35, 1e-9));
   });
 
-  test('keeps an unscored species in the list but out of the index', () async {
+  test('keeps an unscored species in the reading at zero weight', () async {
     await cubit.loadCatalogue();
 
     cubit.addSpecies(_cocconeis);
@@ -96,7 +96,9 @@ void main() {
 
     expect(cubit.state.entries, hasLength(2));
     expect(cubit.state.scoredCount, 1);
+    // However many were found, a species with no scores moves nothing.
     expect(cubit.state.result.di, 5);
+    expect(cubit.state.result.contributions, hasLength(2));
   });
 
   test('drops a species and the weight it carried', () async {
@@ -148,10 +150,21 @@ void main() {
     );
   });
 
-  test('refuses to save when there is no index yet', () async {
+  test('saves a reading made only of unscored species', () async {
     await cubit.loadCatalogue();
 
     cubit.addSpecies(_unscored);
+    expect(cubit.state.result.di, 0);
+
+    await cubit.save();
+
+    expect(cubit.state.saveStatus, SaveStatus.saved);
+    expect(repository.savedEntries, hasLength(1));
+  });
+
+  test('has nothing to save until a species is counted', () async {
+    await cubit.loadCatalogue();
+
     await cubit.save();
 
     expect(cubit.state.saveStatus, SaveStatus.idle);
