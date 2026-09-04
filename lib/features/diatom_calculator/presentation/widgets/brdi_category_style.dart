@@ -9,28 +9,28 @@ import '../../domain/brdi_calculator.dart';
 /// run in one order everywhere: the badge, the gauge and the saved list.
 extension BrdiCategoryStyle on BrdiCategory {
   Color get color => switch (this) {
-        BrdiCategory.sangatBuruk => const Color(0xFFA83A2C),
-        BrdiCategory.buruk => const Color(0xFFC97B3D),
-        BrdiCategory.sedang => const Color(0xFFB8A23C),
-        BrdiCategory.baik => const Color(0xFF4F8F6B),
-        BrdiCategory.sangatBaik => const Color(0xFF1F6E5C),
-      };
+    BrdiCategory.sangatBuruk => const Color(0xFFA83A2C),
+    BrdiCategory.buruk => const Color(0xFFC97B3D),
+    BrdiCategory.sedang => const Color(0xFFB8A23C),
+    BrdiCategory.baik => const Color(0xFF4F8F6B),
+    BrdiCategory.sangatBaik => const Color(0xFF1F6E5C),
+  };
 
   Color get background => switch (this) {
-        BrdiCategory.sangatBuruk => const Color(0xFFFBEAE7),
-        BrdiCategory.buruk => const Color(0xFFFBF0E4),
-        BrdiCategory.sedang => const Color(0xFFFAF6E2),
-        BrdiCategory.baik => const Color(0xFFE9F3ED),
-        BrdiCategory.sangatBaik => const Color(0xFFE2F1EC),
-      };
+    BrdiCategory.sangatBuruk => const Color(0xFFFBEAE7),
+    BrdiCategory.buruk => const Color(0xFFFBF0E4),
+    BrdiCategory.sedang => const Color(0xFFFAF6E2),
+    BrdiCategory.baik => const Color(0xFFE9F3ED),
+    BrdiCategory.sangatBaik => const Color(0xFFE2F1EC),
+  };
 
   Color get foreground => switch (this) {
-        BrdiCategory.sangatBuruk => const Color(0xFF8C2E22),
-        BrdiCategory.buruk => const Color(0xFF95591E),
-        BrdiCategory.sedang => const Color(0xFF8A781F),
-        BrdiCategory.baik => const Color(0xFF357152),
-        BrdiCategory.sangatBaik => const Color(0xFF175A4A),
-      };
+    BrdiCategory.sangatBuruk => const Color(0xFF8C2E22),
+    BrdiCategory.buruk => const Color(0xFF95591E),
+    BrdiCategory.sedang => const Color(0xFF8A781F),
+    BrdiCategory.baik => const Color(0xFF357152),
+    BrdiCategory.sangatBaik => const Color(0xFF175A4A),
+  };
 }
 
 /// The index formatted the way it is read locally: two decimals, comma.
@@ -42,19 +42,19 @@ String formatIndex(double di) => di.toStringAsFixed(2).replaceAll('.', ',');
 /// so the immersive screen uses brighter versions of the same red-to-green run.
 extension BrdiCategoryOnDark on BrdiCategory {
   Color get onDark => switch (this) {
-        BrdiCategory.sangatBuruk => const Color(0xFFF15B4C),
-        BrdiCategory.buruk => const Color(0xFFE8B26A),
-        BrdiCategory.sedang => const Color(0xFFF2D14E),
-        BrdiCategory.baik => const Color(0xFF7AC943),
-        BrdiCategory.sangatBaik => const Color(0xFF5BD6C0),
-      };
+    BrdiCategory.sangatBuruk => const Color(0xFFF15B4C),
+    BrdiCategory.buruk => const Color(0xFFE8B26A),
+    BrdiCategory.sedang => const Color(0xFFF2D14E),
+    BrdiCategory.baik => const Color(0xFF7AC943),
+    BrdiCategory.sangatBaik => const Color(0xFF5BD6C0),
+  };
 
   /// The short label used under the colour chips, where space is tight.
   String get shortLabel => switch (this) {
-        BrdiCategory.sangatBuruk => 'Sangat\nburuk',
-        BrdiCategory.buruk => 'Buruk',
-        BrdiCategory.sedang => 'Sedang',
-        BrdiCategory.baik => 'Baik',
-        BrdiCategory.sangatBaik => 'Sangat\nbaik',
-      };
+    BrdiCategory.sangatBuruk => 'Sangat\nburuk',
+    BrdiCategory.buruk => 'Buruk',
+    BrdiCategory.sedang => 'Sedang',
+    BrdiCategory.baik => 'Baik',
+    BrdiCategory.sangatBaik => 'Sangat\nbaik',
+  };
 }

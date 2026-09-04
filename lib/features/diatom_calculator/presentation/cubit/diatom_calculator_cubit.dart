@@ -13,7 +13,8 @@ part 'diatom_calculator_state.dart';
 class DiatomCalculatorCubit extends Cubit<DiatomCalculatorState> {
   final DiatomCalculatorRepository _repository;
 
-  DiatomCalculatorCubit(this._repository) : super(const DiatomCalculatorState());
+  DiatomCalculatorCubit(this._repository)
+    : super(const DiatomCalculatorState());
 
   Future<void> loadCatalogue() async {
     emit(state.copyWith(catalogueStatus: CatalogueStatus.loading));
@@ -48,10 +49,10 @@ class DiatomCalculatorCubit extends Cubit<DiatomCalculatorState> {
       return;
     }
 
-    _emitWithEntries(
-      [...state.entries, SpeciesEntry(species: species, count: 1)],
-      query: '',
-    );
+    _emitWithEntries([
+      ...state.entries,
+      SpeciesEntry(species: species, count: 1),
+    ], query: '');
   }
 
   void updateCount(int speciesId, int count) {

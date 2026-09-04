@@ -19,7 +19,9 @@ final class DiatomCalculatorRepositoryImpl extends DiatomCalculatorRepository {
       if (response.statusCode == 200) {
         final data = response.data['data'] as List<dynamic>;
         final species = data
-            .map((json) => CatalogueSpecies.fromJson(json as Map<String, dynamic>))
+            .map(
+              (json) => CatalogueSpecies.fromJson(json as Map<String, dynamic>),
+            )
             .toList();
         return Result.success(species);
       }
@@ -41,7 +43,9 @@ final class DiatomCalculatorRepositoryImpl extends DiatomCalculatorRepository {
       if (response.statusCode == 200) {
         final data = response.data['data'] as List<dynamic>;
         final calculations = data
-            .map((json) => SavedCalculation.fromJson(json as Map<String, dynamic>))
+            .map(
+              (json) => SavedCalculation.fromJson(json as Map<String, dynamic>),
+            )
             .toList();
         return Result.success(calculations);
       }
@@ -93,7 +97,9 @@ final class DiatomCalculatorRepositoryImpl extends DiatomCalculatorRepository {
 
       if (response.statusCode == 201 || response.statusCode == 200) {
         return Result.success(
-          SavedCalculation.fromJson(response.data['data'] as Map<String, dynamic>),
+          SavedCalculation.fromJson(
+            response.data['data'] as Map<String, dynamic>,
+          ),
         );
       }
       return Result.failure(

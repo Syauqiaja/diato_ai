@@ -94,7 +94,9 @@ class _EmptyResult extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: context.colorScheme.surfaceContainerHighest.withValues(alpha: 0.4),
+        color: context.colorScheme.surfaceContainerHighest.withValues(
+          alpha: 0.4,
+        ),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Column(
@@ -104,7 +106,9 @@ class _EmptyResult extends StatelessWidget {
           Text(
             'Tambahkan spesies untuk melihat indeks.',
             textAlign: TextAlign.center,
-            style: context.textTheme.bodySmall?.copyWith(color: Colors.grey[600]),
+            style: context.textTheme.bodySmall?.copyWith(
+              color: Colors.grey[600],
+            ),
           ),
         ],
       ),

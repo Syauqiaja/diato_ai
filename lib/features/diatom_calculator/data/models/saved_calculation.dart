@@ -45,7 +45,13 @@ class SavedCalculationEntry extends Equatable {
   }
 
   @override
-  List<Object?> get props => [speciesId, speciesName, count, sensitivity, indicator];
+  List<Object?> get props => [
+    speciesId,
+    speciesName,
+    count,
+    sensitivity,
+    indicator,
+  ];
 }
 
 /// A water quality reading kept on the server for this device.
@@ -77,7 +83,8 @@ class SavedCalculation extends Equatable {
       di: (json['di'] as num).toDouble(),
       // Fall back to the band the index itself lands in, so a value this build
       // does not recognise still shows something sensible.
-      category: BrdiCategory.fromValue(json['category'] as String?) ??
+      category:
+          BrdiCategory.fromValue(json['category'] as String?) ??
           BrdiCategory.forIndex((json['di'] as num).toDouble()),
       createdAt: DateTime.tryParse(json['created_at'] as String? ?? ''),
       entries: entries,

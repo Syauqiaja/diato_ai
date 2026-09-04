@@ -49,7 +49,8 @@ class DiatomCalculatorState extends Equatable {
   }
 
   /// How many counted species carry the scores the index is built from.
-  int get scoredCount => entries.where((entry) => entry.species.isScored).length;
+  int get scoredCount =>
+      entries.where((entry) => entry.species.isScored).length;
 
   bool get hasResult => result.di != null;
 
@@ -79,14 +80,14 @@ class DiatomCalculatorState extends Equatable {
 
   @override
   List<Object?> get props => [
-        catalogueStatus,
-        catalogue,
-        catalogueError,
-        entries,
-        query,
-        location,
-        result,
-        saveStatus,
-        saveError,
-      ];
+    catalogueStatus,
+    catalogue,
+    catalogueError,
+    entries,
+    query,
+    location,
+    result,
+    saveStatus,
+    saveError,
+  ];
 }

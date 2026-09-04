@@ -4,11 +4,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../core/theme/theme.dart';
 import '../../shared/widgets/spacings.dart';
+import '../data/models/catalogue_species.dart';
+import '../data/models/saved_calculation.dart';
 import '../domain/brdi_calculator.dart';
 import 'cubit/diatom_calculator_cubit.dart';
 import 'widgets/brdi_category_style.dart';
 import 'widgets/brdi_contribution_bars.dart';
 import 'widgets/brdi_ring_gauge.dart';
+import 'widgets/calculation_date.dart';
 
 /// The result of one calculation, shown on its own screen.
 ///
@@ -16,8 +19,18 @@ import 'widgets/brdi_ring_gauge.dart';
 /// is on show: the animation is telling the user what the numbers behind them
 /// came to, and a card that re-animated because a count changed underneath
 /// would be describing a different sample than the one they asked about.
+///
+/// It opens two ways. The default constructor shows the reading the calculator
+/// has just worked out, which can still be named and saved. [DiatomResultScreen.saved]
+/// reopens a reading already stored: the same figures, but nothing left to
+/// edit, so the location and the date are shown rather than asked for.
 class DiatomResultScreen extends StatefulWidget {
-  const DiatomResultScreen({super.key});
+  /// The stored reading being reopened, or null when this is a fresh one.
+  final SavedCalculation? calculation;
+
+  const DiatomResultScreen({super.key}) : calculation = null;
+
+  const DiatomResultScreen.saved({super.key, required this.calculation});
 
   @override
   State<DiatomResultScreen> createState() => _DiatomResultScreenState();
@@ -32,10 +45,15 @@ class _DiatomResultScreenState extends State<DiatomResultScreen>
 
   /// The reading this screen was opened to show, frozen at that moment.
   late final BrdiResult _result;
+  late final BrdiCategory? _category;
   late final int _speciesCount;
   late final int _scoredCount;
 
-  late final TextEditingController _locationController;
+  /// Only a fresh reading has a location left to write; a stored one has one.
+  TextEditingController? _locationController;
+
+  /// A stored reading is read only: there is nothing here left to save.
+  bool get _isStored => widget.calculation != null;
 
   late final Animation<double> _ring = CurvedAnimation(
     parent: _controller,
@@ -61,26 +79,62 @@ class _DiatomResultScreenState extends State<DiatomResultScreen>
   void initState() {
     super.initState();
 
-    final state = context.read<DiatomCalculatorCubit>().state;
-    _result = state.result;
-    _speciesCount = state.entries.length;
-    _scoredCount = state.scoredCount;
-    _locationController = TextEditingController(text: state.location);
+    final stored = widget.calculation;
+    if (stored != null) {
+      _result = _resultOf(stored);
+      // The band the server stored wins over the one the index falls in, so a
+      // reopened reading says what it said when it was saved.
+      _category = stored.category ?? _result.category;
+      _speciesCount = stored.entries.length;
+      _scoredCount = stored.entries.where((entry) => entry.isScored).length;
+    } else {
+      final state = context.read<DiatomCalculatorCubit>().state;
+      _result = state.result;
+      _category = state.result.category;
+      _speciesCount = state.entries.length;
+      _scoredCount = state.scoredCount;
+      _locationController = TextEditingController(text: state.location);
+    }
 
     _controller.forward();
+  }
+
+  /// The stored reading rebuilt into the shape the dial and the breakdown
+  /// draw from. The index itself is the saved one rather than a fresh sum: it
+  /// is what was recorded, and recomputing it could quietly disagree.
+  static BrdiResult _resultOf(SavedCalculation calculation) {
+    return BrdiResult(
+      di: calculation.di,
+      contributions: [
+        for (final entry in calculation.entries)
+          BrdiContribution(
+            species: CatalogueSpecies(
+              // A species dropped from the catalogue since leaves no id; the
+              // breakdown only reads the name, so a placeholder is enough.
+              id: entry.speciesId ?? -1,
+              name: entry.speciesName,
+              sensitivity: entry.sensitivity,
+              indicator: entry.indicator,
+            ),
+            count: entry.count,
+            sensitivity: entry.sensitivity ?? 0,
+            indicator: entry.indicator ?? 0,
+          ),
+      ],
+    );
   }
 
   @override
   void dispose() {
     _controller.dispose();
-    _locationController.dispose();
+    _locationController?.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final di = _result.di;
-    final category = _result.category;
+    final category = _category;
 
     // Nothing to show means the screen was opened on an empty reading, which
     // the calculator does not allow; bail out rather than draw a blank ring.
@@ -88,59 +142,70 @@ class _DiatomResultScreenState extends State<DiatomResultScreen>
       return const Scaffold(backgroundColor: AppTheme.primaryColor);
     }
 
-    return Scaffold(
-      backgroundColor: AppTheme.primaryColor,
-      body: BlocListener<DiatomCalculatorCubit, DiatomCalculatorState>(
-        listenWhen: (previous, current) =>
-            previous.saveStatus != current.saveStatus,
-        listener: (context, state) {
-          // The calculator screen owns the message and the reset; this screen
-          // only has to get out of the way once the reading is stored.
-          if (state.saveStatus == SaveStatus.saved) Navigator.of(context).pop();
-        },
-        child: SafeArea(
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                _Header(onBack: () => Navigator.of(context).pop()),
-                _LocationField(controller: _locationController),
-                SizedBox(
-                  height: 300,
-                  child: Center(
-                    child: AnimatedBuilder(
-                      animation: _controller,
-                      builder: (context, _) => _Dial(
-                        di: di,
-                        category: category,
-                        ring: _ring.value,
-                        drop: _drop.value,
-                        label: _label.value,
-                      ),
-                    ),
-                  ),
-                ),
-                AnimatedBuilder(
-                  animation: _sheet,
-                  builder: (context, child) => Opacity(
-                    opacity: _sheet.value,
-                    child: Transform.translate(
-                      offset: Offset(0, 60 * (1 - _sheet.value)),
-                      child: child,
-                    ),
-                  ),
-                  child: _SummarySheet(
-                    result: _result,
+    final body = SafeArea(
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            _Header(onBack: () => Navigator.of(context).pop()),
+            if (_locationController case final controller?)
+              _LocationField(controller: controller)
+            else
+              _LocationLabel(calculation: widget.calculation!),
+            SizedBox(
+              height: 300,
+              child: Center(
+                child: AnimatedBuilder(
+                  animation: _controller,
+                  builder: (context, _) => _Dial(
+                    di: di,
                     category: category,
-                    speciesCount: _speciesCount,
-                    scoredCount: _scoredCount,
+                    ring: _ring.value,
+                    drop: _drop.value,
+                    label: _label.value,
                   ),
                 ),
-                const SizedBox(height: kBotbarHeight),
-              ],
+              ),
             ),
-          ),
+            AnimatedBuilder(
+              animation: _sheet,
+              builder: (context, child) => Opacity(
+                opacity: _sheet.value,
+                child: Transform.translate(
+                  offset: Offset(0, 60 * (1 - _sheet.value)),
+                  child: child,
+                ),
+              ),
+              child: _SummarySheet(
+                result: _result,
+                category: category,
+                speciesCount: _speciesCount,
+                scoredCount: _scoredCount,
+                savedAt: widget.calculation?.createdAt,
+                canSave: !_isStored,
+              ),
+            ),
+            const SizedBox(height: kBotbarHeight),
+          ],
         ),
       ),
+    );
+
+    return Scaffold(
+      backgroundColor: AppTheme.primaryColor,
+      body: _isStored
+          ? body
+          : BlocListener<DiatomCalculatorCubit, DiatomCalculatorState>(
+              listenWhen: (previous, current) =>
+                  previous.saveStatus != current.saveStatus,
+              listener: (context, state) {
+                // The calculator screen owns the message and the reset; this
+                // screen only has to get out of the way once it is stored.
+                if (state.saveStatus == SaveStatus.saved) {
+                  Navigator.of(context).pop();
+                }
+              },
+              child: body,
+            ),
     );
   }
 }
@@ -240,6 +305,72 @@ class _LocationField extends StatelessWidget {
   }
 }
 
+/// The same pill as [_LocationField], for a reading that is only being read
+/// back: where it was taken, and when.
+class _LocationLabel extends StatelessWidget {
+  final SavedCalculation calculation;
+
+  const _LocationLabel({required this.calculation});
+
+  @override
+  Widget build(BuildContext context) {
+    final createdAt = calculation.createdAt;
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 12, 20, 8),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+        decoration: BoxDecoration(
+          color: Colors.white.withValues(alpha: 0.14),
+          borderRadius: BorderRadius.circular(999),
+        ),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(9),
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.16),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                Icons.place_outlined,
+                size: 18,
+                color: Colors.white,
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    calculation.location ?? 'Tanpa nama lokasi',
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  if (createdAt != null)
+                    Text(
+                      formatCalculationDate(createdAt),
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: Colors.white.withValues(alpha: 0.7),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 10),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 /// The ring, the drop inside it and the band's name underneath.
 class _Dial extends StatelessWidget {
   final double di;
@@ -272,11 +403,7 @@ class _Dial extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(
-                  Icons.water_drop,
-                  size: 56,
-                  color: category.onDark,
-                ),
+                Icon(Icons.water_drop, size: 56, color: category.onDark),
                 const SizedBox(height: 8),
                 Text(
                   // Counting up with the ring keeps the number and the fill
@@ -315,11 +442,20 @@ class _SummarySheet extends StatelessWidget {
   final int speciesCount;
   final int scoredCount;
 
+  /// When the reading was stored, or null while it still only exists here.
+  final DateTime? savedAt;
+
+  /// A stored reading has nothing left to save, so the button is left off
+  /// rather than shown doing nothing.
+  final bool canSave;
+
   const _SummarySheet({
     required this.result,
     required this.category,
     required this.speciesCount,
     required this.scoredCount,
+    required this.savedAt,
+    required this.canSave,
   });
 
   @override
@@ -341,53 +477,54 @@ class _SummarySheet extends StatelessWidget {
             children: [
               _CategoryScale(current: category),
               const SizedBox(height: 24),
-              _SummaryRow(
-                label: 'Indeks BRDI',
-                value: formatIndex(result.di!),
-              ),
-              _SummaryRow(
-                label: 'Spesies dihitung',
-                value: '$speciesCount',
-              ),
+              _SummaryRow(label: 'Indeks BRDI', value: formatIndex(result.di!)),
+              _SummaryRow(label: 'Spesies dihitung', value: '$speciesCount'),
               _SummaryRow(
                 label: 'Spesies berskor',
                 value: '$scoredCount dari $speciesCount',
               ),
+              if (savedAt != null)
+                _SummaryRow(
+                  label: 'Disimpan',
+                  value: formatCalculationDate(savedAt!),
+                ),
               const SizedBox(height: 12),
               const Divider(height: 1),
               _Detail(result: result),
-              const SizedBox(height: 20),
-              BlocBuilder<DiatomCalculatorCubit, DiatomCalculatorState>(
-                buildWhen: (previous, current) =>
-                    previous.saveStatus != current.saveStatus,
-                builder: (context, state) {
-                  final saving = state.saveStatus == SaveStatus.saving;
+              if (canSave) ...[
+                const SizedBox(height: 20),
+                BlocBuilder<DiatomCalculatorCubit, DiatomCalculatorState>(
+                  buildWhen: (previous, current) =>
+                      previous.saveStatus != current.saveStatus,
+                  builder: (context, state) {
+                    final saving = state.saveStatus == SaveStatus.saving;
 
-                  return FilledButton(
-                    onPressed: saving
-                        ? null
-                        : context.read<DiatomCalculatorCubit>().save,
-                    style: FilledButton.styleFrom(
-                      backgroundColor: AppTheme.secondaryColor,
-                      foregroundColor: AppTheme.primaryColor,
-                      minimumSize: const Size.fromHeight(48),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(999),
+                    return FilledButton(
+                      onPressed: saving
+                          ? null
+                          : context.read<DiatomCalculatorCubit>().save,
+                      style: FilledButton.styleFrom(
+                        backgroundColor: AppTheme.secondaryColor,
+                        foregroundColor: AppTheme.primaryColor,
+                        minimumSize: const Size.fromHeight(48),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(999),
+                        ),
                       ),
-                    ),
-                    child: saving
-                        ? const SizedBox(
-                            height: 18,
-                            width: 18,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
-                        : const Text(
-                            'Simpan Perhitungan',
-                            style: TextStyle(fontWeight: FontWeight.w700),
-                          ),
-                  );
-                },
-              ),
+                      child: saving
+                          ? const SizedBox(
+                              height: 18,
+                              width: 18,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          : const Text(
+                              'Simpan Perhitungan',
+                              style: TextStyle(fontWeight: FontWeight.w700),
+                            ),
+                    );
+                  },
+                ),
+              ],
             ],
           ),
         ),

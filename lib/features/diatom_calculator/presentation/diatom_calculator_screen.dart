@@ -64,10 +64,8 @@ class _DiatomCalculatorViewState extends State<_DiatomCalculatorView> {
 
     Navigator.of(context, rootNavigator: true).push(
       MaterialPageRoute(
-        builder: (_) => BlocProvider.value(
-          value: cubit,
-          child: const DiatomResultScreen(),
-        ),
+        builder: (_) =>
+            BlocProvider.value(value: cubit, child: const DiatomResultScreen()),
       ),
     );
   }
@@ -92,7 +90,9 @@ class _DiatomCalculatorViewState extends State<_DiatomCalculatorView> {
             } else if (state.saveStatus == SaveStatus.error) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text(state.saveError ?? 'Gagal menyimpan perhitungan'),
+                  content: Text(
+                    state.saveError ?? 'Gagal menyimpan perhitungan',
+                  ),
                   behavior: SnackBarBehavior.floating,
                 ),
               );

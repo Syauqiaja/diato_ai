@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../data/models/saved_calculation.dart';
+import 'diatom_result_screen.dart';
 import '../domain/repositories/diatom_calculator_repository.dart';
 import 'cubit/saved_calculations_cubit.dart';
 import 'widgets/brdi_category_badge.dart';
 import 'widgets/brdi_category_style.dart';
+import 'widgets/calculation_date.dart';
 
 /// Readings saved from this device.
 ///
@@ -96,7 +98,17 @@ class _SavedCalculationsView extends StatelessWidget {
                           );
                         }
                       },
-                      child: _CalculationCard(calculation: calculation),
+                      child: _CalculationCard(
+                        calculation: calculation,
+                        onTap: () =>
+                            Navigator.of(context, rootNavigator: true).push(
+                              MaterialPageRoute(
+                                builder: (_) => DiatomResultScreen.saved(
+                                  calculation: calculation,
+                                ),
+                              ),
+                            ),
+                      ),
                     );
                   },
                 ),
@@ -131,109 +143,105 @@ class _SavedCalculationsView extends StatelessWidget {
 
 class _CalculationCard extends StatelessWidget {
   final SavedCalculation calculation;
+  final VoidCallback onTap;
 
-  const _CalculationCard({required this.calculation});
+  const _CalculationCard({required this.calculation, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     final category = calculation.category;
     final scored = calculation.entries.where((e) => e.isScored).length;
 
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: category?.background ?? context.colorScheme.surface,
+    return Material(
+      color: category?.background ?? context.colorScheme.surface,
+      borderRadius: BorderRadius.circular(16),
+      child: InkWell(
+        onTap: onTap,
         borderRadius: BorderRadius.circular(16),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      calculation.location ?? 'Tanpa nama lokasi',
-                      style: context.textTheme.titleMedium?.copyWith(
-                        color: category?.foreground,
-                      ),
-                    ),
-                    if (calculation.createdAt != null)
-                      Text(
-                        _formatDate(calculation.createdAt!),
-                        style: context.textTheme.bodySmall?.copyWith(
-                          color: category?.foreground.withValues(alpha: 0.8),
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    formatIndex(calculation.di),
-                    style: context.textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.w600,
-                      color: category?.foreground,
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          calculation.location ?? 'Tanpa nama lokasi',
+                          style: context.textTheme.titleMedium?.copyWith(
+                            color: category?.foreground,
+                          ),
+                        ),
+                        if (calculation.createdAt != null)
+                          Text(
+                            formatCalculationDate(calculation.createdAt!),
+                            style: context.textTheme.bodySmall?.copyWith(
+                              color: category?.foreground.withValues(
+                                alpha: 0.8,
+                              ),
+                            ),
+                          ),
+                      ],
                     ),
                   ),
-                  const SizedBox(height: 4),
-                  if (category != null)
-                    BrdiCategoryBadge(category: category, dense: true),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                        formatIndex(calculation.di),
+                        style: context.textTheme.headlineSmall?.copyWith(
+                          fontWeight: FontWeight.w600,
+                          color: category?.foreground,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      if (category != null)
+                        BrdiCategoryBadge(category: category, dense: true),
+                    ],
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Text(
+                '${calculation.entries.length} spesies dicatat · $scored punya skor',
+                style: context.textTheme.bodySmall?.copyWith(
+                  color: category?.foreground,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 6,
+                runSpacing: 6,
+                children: [
+                  for (final entry in calculation.entries)
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.6),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        '${entry.speciesName} · ${entry.count}',
+                        style: context.textTheme.bodySmall?.copyWith(
+                          fontStyle: FontStyle.italic,
+                          color: entry.isScored ? null : Colors.grey[600],
+                        ),
+                      ),
+                    ),
                 ],
               ),
             ],
           ),
-          const SizedBox(height: 12),
-          Text(
-            '${calculation.entries.length} spesies dicatat · $scored punya skor',
-            style: context.textTheme.bodySmall?.copyWith(
-              color: category?.foreground,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Wrap(
-            spacing: 6,
-            runSpacing: 6,
-            children: [
-              for (final entry in calculation.entries)
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 4,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.6),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Text(
-                    '${entry.speciesName} · ${entry.count}',
-                    style: context.textTheme.bodySmall?.copyWith(
-                      fontStyle: FontStyle.italic,
-                      color: entry.isScored ? null : Colors.grey[600],
-                    ),
-                  ),
-                ),
-            ],
-          ),
-        ],
+        ),
       ),
     );
-  }
-
-  String _formatDate(DateTime date) {
-    final local = date.toLocal();
-    const months = [
-      'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-      'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember',
-    ];
-    final time =
-        '${local.hour.toString().padLeft(2, '0')}.${local.minute.toString().padLeft(2, '0')}';
-    return '${local.day} ${months[local.month - 1]} ${local.year} · $time';
   }
 }
 
@@ -263,7 +271,10 @@ class _Message extends StatelessWidget {
             ),
             if (onRetry != null) ...[
               const SizedBox(height: 16),
-              OutlinedButton(onPressed: onRetry, child: const Text('Coba lagi')),
+              OutlinedButton(
+                onPressed: onRetry,
+                child: const Text('Coba lagi'),
+              ),
             ],
           ],
         ),

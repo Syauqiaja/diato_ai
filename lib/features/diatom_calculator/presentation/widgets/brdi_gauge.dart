@@ -35,7 +35,10 @@ class BrdiGauge extends StatelessWidget {
                         children: [
                           for (final category in BrdiCategory.values)
                             Expanded(
-                              child: Container(height: 8, color: category.color),
+                              child: Container(
+                                height: 8,
+                                color: category.color,
+                              ),
                             ),
                         ],
                       ),

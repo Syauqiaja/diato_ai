@@ -43,9 +43,7 @@ class SpeciesSearchField extends StatelessWidget {
               horizontal: 12,
               vertical: 14,
             ),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
           ),
         ),
         if (suggestions.isNotEmpty) ...[
