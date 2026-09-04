@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../../domain/brdi_calculator.dart';
 import 'brdi_category_badge.dart';
+import 'brdi_contribution_bars.dart';
 import 'brdi_category_style.dart';
 import 'brdi_gauge.dart';
 
@@ -80,69 +81,9 @@ class _BrdiResultCardState extends State<BrdiResultCard> {
               ),
             ),
           ),
-          if (_showDetail) _ContributionBars(result: widget.result),
+          if (_showDetail) BrdiContributionBars(result: widget.result),
         ],
       ),
-    );
-  }
-}
-
-/// Each species' share of the index's numerator, largest first.
-class _ContributionBars extends StatelessWidget {
-  final BrdiResult result;
-
-  const _ContributionBars({required this.result});
-
-  @override
-  Widget build(BuildContext context) {
-    final total = result.totalScore;
-    final contributions = [...result.contributions]
-      ..sort((a, b) => b.score.compareTo(a.score));
-    final category = result.category!;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        for (final contribution in contributions)
-          Padding(
-            padding: const EdgeInsets.only(bottom: 10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Text(
-                        contribution.species.name,
-                        style: context.textTheme.bodySmall?.copyWith(
-                          fontStyle: FontStyle.italic,
-                          color: category.foreground,
-                        ),
-                      ),
-                    ),
-                    Text(
-                      '${contribution.count} · skor ${contribution.sensitivity}',
-                      style: context.textTheme.bodySmall?.copyWith(
-                        color: category.foreground,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 4),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(999),
-                  child: LinearProgressIndicator(
-                    value: total > 0 ? contribution.score / total : 0,
-                    minHeight: 6,
-                    backgroundColor: Colors.white.withValues(alpha: 0.6),
-                    valueColor: AlwaysStoppedAnimation(category.color),
-                  ),
-                ),
-              ],
-            ),
-          ),
-      ],
     );
   }
 }

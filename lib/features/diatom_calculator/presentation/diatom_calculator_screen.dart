@@ -8,16 +8,19 @@ import 'package:go_router/go_router.dart';
 import '../../../core/theme/theme.dart';
 import '../domain/repositories/diatom_calculator_repository.dart';
 import 'cubit/diatom_calculator_cubit.dart';
+import 'diatom_result_screen.dart';
 import 'saved_calculations_screen.dart';
-import 'widgets/brdi_result_card.dart';
 import 'widgets/species_entry_tile.dart';
 import 'widgets/species_search_field.dart';
 
 /// The Brantas River Diatom Index calculator.
 ///
 /// The species catalogue is fetched from the server, but the index is worked
-/// out on the device: counts change and the number under them follows straight
-/// away, with no round trip. Saving is what talks to the server.
+/// out on the device. The number is kept off this screen until the user asks
+/// for it: counting is the work, and a figure that shifted with every keystroke
+/// would be read as a result before the sample was finished. Pressing
+/// "Lakukan Perhitungan" opens the reading on [DiatomResultScreen], where it is
+/// also saved.
 class DiatomCalculatorScreen extends StatelessWidget {
   static const String routeName = 'diatom_calculator';
   static const String routePath = '/diatom-calculator';
@@ -44,13 +47,29 @@ class _DiatomCalculatorView extends StatefulWidget {
 
 class _DiatomCalculatorViewState extends State<_DiatomCalculatorView> {
   final TextEditingController _searchController = TextEditingController();
-  final TextEditingController _locationController = TextEditingController();
 
   @override
   void dispose() {
     _searchController.dispose();
-    _locationController.dispose();
     super.dispose();
+  }
+
+  /// Opens the result on its own screen, carrying the same cubit across so the
+  /// reading shown there is the one the counts on this screen produced.
+  ///
+  /// It goes on the root navigator: the result is meant to fill the screen, and
+  /// the shell's bottom bar would otherwise sit over the save button.
+  void _openResult(BuildContext context, DiatomCalculatorCubit cubit) {
+    FocusScope.of(context).unfocus();
+
+    Navigator.of(context, rootNavigator: true).push(
+      MaterialPageRoute(
+        builder: (_) => BlocProvider.value(
+          value: cubit,
+          child: const DiatomResultScreen(),
+        ),
+      ),
+    );
   }
 
   @override
@@ -63,7 +82,6 @@ class _DiatomCalculatorViewState extends State<_DiatomCalculatorView> {
           listener: (context, state) {
             if (state.saveStatus == SaveStatus.saved) {
               _searchController.clear();
-              _locationController.clear();
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
                   content: Text('Perhitungan tersimpan'),
@@ -144,37 +162,18 @@ class _DiatomCalculatorViewState extends State<_DiatomCalculatorView> {
                   ],
 
                   const SizedBox(height: 20),
-                  BrdiResultCard(result: state.result),
-                  const SizedBox(height: 20),
-
-                  TextField(
-                    controller: _locationController,
-                    onChanged: cubit.setLocation,
-                    decoration: InputDecoration(
-                      labelText: 'Lokasi / stasiun (opsional)',
-                      hintText: 'Contoh: Stasiun I, Sungai Brantas',
-                      isDense: true,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  FilledButton(
-                    onPressed: state.hasResult &&
-                            state.saveStatus != SaveStatus.saving
-                        ? cubit.save
+                  FilledButton.icon(
+                    onPressed: state.hasResult
+                        ? () => _openResult(context, cubit)
                         : null,
+                    icon: const Icon(Icons.calculate_outlined),
+                    label: const Text('Lakukan Perhitungan'),
                     style: FilledButton.styleFrom(
                       minimumSize: const Size.fromHeight(48),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(999),
+                      ),
                     ),
-                    child: state.saveStatus == SaveStatus.saving
-                        ? const SizedBox(
-                            height: 18,
-                            width: 18,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
-                        : const Text('Simpan perhitungan'),
                   ),
                 ],
               ],

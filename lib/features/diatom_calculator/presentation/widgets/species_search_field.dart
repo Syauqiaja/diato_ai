@@ -75,13 +75,6 @@ class SpeciesSearchField extends StatelessWidget {
                               ),
                             ),
                           ),
-                          if (!species.isScored)
-                            Text(
-                              'belum berskor',
-                              style: context.textTheme.bodySmall?.copyWith(
-                                color: Colors.grey[600],
-                              ),
-                            ),
                         ],
                       ),
                     ),

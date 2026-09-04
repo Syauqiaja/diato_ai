@@ -36,7 +36,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text('Explore Courses', style: context.textTheme.displayLarge?.copyWith(color: context.colorScheme.primary)),
+              Text('Explore Diatom di Sungai brantas', style: context.textTheme.displayLarge?.copyWith(color: context.colorScheme.primary)),
               vSpace(16),
               Expanded(
                 child: BlocBuilder<ExploreIndexCubit, ExploreIndexState>(

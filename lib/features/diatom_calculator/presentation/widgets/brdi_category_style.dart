@@ -35,3 +35,26 @@ extension BrdiCategoryStyle on BrdiCategory {
 
 /// The index formatted the way it is read locally: two decimals, comma.
 String formatIndex(double di) => di.toStringAsFixed(2).replaceAll('.', ',');
+
+/// The band's colour on the deep blue result screen.
+///
+/// The muted colours above are made for a white card and go grey against blue,
+/// so the immersive screen uses brighter versions of the same red-to-green run.
+extension BrdiCategoryOnDark on BrdiCategory {
+  Color get onDark => switch (this) {
+        BrdiCategory.sangatBuruk => const Color(0xFFF15B4C),
+        BrdiCategory.buruk => const Color(0xFFE8B26A),
+        BrdiCategory.sedang => const Color(0xFFF2D14E),
+        BrdiCategory.baik => const Color(0xFF7AC943),
+        BrdiCategory.sangatBaik => const Color(0xFF5BD6C0),
+      };
+
+  /// The short label used under the colour chips, where space is tight.
+  String get shortLabel => switch (this) {
+        BrdiCategory.sangatBuruk => 'Sangat\nburuk',
+        BrdiCategory.buruk => 'Buruk',
+        BrdiCategory.sedang => 'Sedang',
+        BrdiCategory.baik => 'Baik',
+        BrdiCategory.sangatBaik => 'Sangat\nbaik',
+      };
+}
