@@ -6,6 +6,7 @@ import 'package:diato_ai/features/shared/models/course_item.dart';
 import 'package:diato_ai/features/species/data/models/species_summary.dart';
 import 'package:diato_ai/features/species/presentation/cubit/species_list_cubit.dart';
 import 'package:diato_ai/features/species/presentation/species_detail_screen.dart';
+import 'package:diato_ai/features/shared/widgets/shimmer.dart';
 import 'package:diato_ai/features/shared/widgets/spacings.dart';
 import 'package:diato_ai/utils/extensions/context_extensions.dart';
 import 'package:flutter/material.dart';
@@ -40,7 +41,13 @@ class _ExploreScreenState extends State<ExploreScreen> {
         if (state is ExploreIndexLoading) {
           return SizedBox(
             height: _courseRailHeight,
-            child: Center(child: CircularProgressIndicator(color: context.colorScheme.primary)),
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: 3,
+              separatorBuilder: (context, index) => hSpace(12),
+              itemBuilder: (context, index) => const _CourseCardSkeleton(),
+            ),
           );
         }
 
@@ -85,7 +92,13 @@ class _ExploreScreenState extends State<ExploreScreen> {
     return BlocBuilder<SpeciesListCubit, SpeciesListState>(
       builder: (context, state) {
         if (state is SpeciesListLoading) {
-          return Center(child: CircularProgressIndicator(color: context.colorScheme.primary));
+          return ListView.separated(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: 4,
+            separatorBuilder: (context, index) => vSpace(12),
+            itemBuilder: (context, index) => const _SpeciesItemSkeleton(),
+          );
         }
 
         if (state is! SpeciesListData) {
@@ -243,6 +256,78 @@ class _SpeciesItem extends StatelessWidget {
         ),
         trailing: Icon(Icons.arrow_forward_ios, size: 16, color: context.colorScheme.primary),
         onTap: () => SpeciesDetailScreen.push(context, species.id),
+      ),
+    );
+  }
+}
+
+/// Stand-in for [_CourseCard] while the rail is loading.
+class _CourseCardSkeleton extends StatelessWidget {
+  const _CourseCardSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 168,
+      child: Material(
+        color: AppTheme.canvasColor,
+        borderRadius: BorderRadius.circular(16),
+        clipBehavior: Clip.antiAlias,
+        child: Shimmer(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const ShimmerBox(width: double.infinity, height: 120, radius: 0),
+              Padding(
+                padding: const EdgeInsets.all(12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const ShimmerBox(width: double.infinity, height: 14),
+                    vSpace(6),
+                    const ShimmerBox(width: 100, height: 14),
+                    vSpace(8),
+                    const ShimmerBox(width: 64, height: 10),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Stand-in for [_SpeciesItem] while the catalogue is loading.
+class _SpeciesItemSkeleton extends StatelessWidget {
+  const _SpeciesItemSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: AppTheme.canvasColor,
+      borderRadius: BorderRadius.circular(16),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        child: Shimmer(
+          child: Row(
+            children: [
+              const ShimmerBox(width: 60, height: 60, radius: 12),
+              hSpace(16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const ShimmerBox(width: double.infinity, height: 14),
+                    vSpace(8),
+                    const ShimmerBox(width: 120, height: 10),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
