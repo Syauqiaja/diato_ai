@@ -2,6 +2,7 @@ import 'package:diato_ai/core/assets/assets.dart';
 import 'package:diato_ai/core/theme/theme.dart';
 import 'package:diato_ai/features/map/presentation/cubit/station_detail_cubit.dart';
 import 'package:diato_ai/features/shared/models/station_detail.dart';
+import 'package:diato_ai/features/shared/widgets/image_viewer.dart';
 import 'package:diato_ai/features/shared/widgets/spacings.dart';
 import 'package:diato_ai/utils/extensions/context_extensions.dart';
 import 'package:flutter/material.dart';
@@ -94,21 +95,32 @@ class _StationDetailContent extends StatelessWidget {
       scrollController: scrollController,
       children: [
         if (imageUrl != null) ...[
-          ClipRRect(
-            borderRadius: BorderRadius.circular(16),
-            child: Image.network(
-              imageUrl,
-              height: 180,
-              width: double.infinity,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                return Image.asset(
-                  Assets.diatomi,
+          GestureDetector(
+            onTap: () => showImageViewer(
+              context,
+              imageUrl: imageUrl,
+              heroTag: 'station-image-${station.id}',
+              fallback: Image.asset(Assets.diatomi, fit: BoxFit.contain),
+            ),
+            child: Hero(
+              tag: 'station-image-${station.id}',
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(16),
+                child: Image.network(
+                  imageUrl,
                   height: 180,
                   width: double.infinity,
                   fit: BoxFit.cover,
-                );
-              },
+                  errorBuilder: (context, error, stackTrace) {
+                    return Image.asset(
+                      Assets.diatomi,
+                      height: 180,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                    );
+                  },
+                ),
+              ),
             ),
           ),
           vSpace(16),

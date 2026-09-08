@@ -11,12 +11,14 @@ void main() {
         'id': 3,
         'name': 'Kaca Cocconeis',
         'image': '/storage/species/a.jpg',
+        'content_title': 'Mengenal Cocconeis',
         'content': '<h2>Habitat</h2><p>Batu di arus deras.</p>',
         'sensitivity': 4,
         'indicator': 2,
       });
 
       expect(detail.id, 3);
+      expect(detail.title, 'Mengenal Cocconeis');
       expect(detail.content, '<h2>Habitat</h2><p>Batu di arus deras.</p>');
       expect(detail.hasContent, isTrue);
       expect(detail.isScored, isTrue);
@@ -36,6 +38,8 @@ void main() {
       expect(detail.hasContent, isFalse);
       expect(detail.isScored, isFalse);
       expect(detail.image, isNull);
+      // Nothing written, so the species name heads the screen.
+      expect(detail.title, 'Navicula');
     });
   });
 
@@ -45,6 +49,7 @@ void main() {
         'id': 1,
         'name': 'Kaca Cocconeis',
         'image': null,
+        'content_title': 'Mengenal Cocconeis',
         'has_content': true,
         'sensitivity': 5,
         'indicator': 3,
@@ -57,13 +62,17 @@ void main() {
       });
 
       expect(written.hasContent, isTrue);
+      expect(written.title, 'Mengenal Cocconeis');
       expect(unwritten.hasContent, isFalse);
+      // No explanation title written, so the list falls back to the name.
+      expect(unwritten.title, 'Navicula');
     });
 
     test('an older backend without the flag reads as nothing to open', () {
       final species = SpeciesSummary.fromJson({'id': 9, 'name': 'Cymbella'});
 
       expect(species.hasContent, isFalse);
+      expect(species.title, 'Cymbella');
     });
   });
 

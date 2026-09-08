@@ -9,6 +9,10 @@ class SpeciesDetail extends Equatable {
   final int id;
   final String name;
   final String? image;
+
+  /// Headline written for the explanation; the species name stands in when the
+  /// console left it empty.
+  final String? contentTitle;
   final String? content;
   final int? sensitivity;
   final int? indicator;
@@ -17,10 +21,15 @@ class SpeciesDetail extends Equatable {
     required this.id,
     required this.name,
     this.image,
+    this.contentTitle,
     this.content,
     this.sensitivity,
     this.indicator,
   });
+
+  /// What to show as the heading of the explanation.
+  String get title =>
+      (contentTitle ?? '').trim().isEmpty ? name : contentTitle!.trim();
 
   bool get hasContent => (content ?? '').trim().isNotEmpty;
 
@@ -31,6 +40,7 @@ class SpeciesDetail extends Equatable {
       id: json['id'] as int,
       name: json['name'] as String,
       image: resolveAssetUrl(json['image'] as String?),
+      contentTitle: json['content_title'] as String?,
       content: json['content'] as String?,
       sensitivity: (json['sensitivity'] as num?)?.toInt(),
       indicator: (json['indicator'] as num?)?.toInt(),
@@ -38,5 +48,6 @@ class SpeciesDetail extends Equatable {
   }
 
   @override
-  List<Object?> get props => [id, name, image, content, sensitivity, indicator];
+  List<Object?> get props =>
+      [id, name, image, contentTitle, content, sensitivity, indicator];
 }

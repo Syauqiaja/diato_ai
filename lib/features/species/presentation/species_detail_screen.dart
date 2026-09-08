@@ -91,12 +91,22 @@ class _SpeciesDetailScreenState extends State<SpeciesDetailScreen> {
                           ),
                         ),
                         Text(
-                          detail?.name ?? 'Spesies',
+                          detail?.title ?? 'Spesies',
                           style: context.textTheme.displayLarge?.copyWith(
                             color: textColor,
                             height: 0.9,
                           ),
                         ),
+                        if (detail != null && detail.title != detail.name) ...[
+                          vSpace(4),
+                          Text(
+                            detail.name,
+                            style: context.textTheme.bodyMedium?.copyWith(
+                              color: textColor.withValues(alpha: 0.7),
+                              fontStyle: FontStyle.italic,
+                            ),
+                          ),
+                        ],
                         vSpace(16),
                         const LinearLine(),
                         vSpace(24),
