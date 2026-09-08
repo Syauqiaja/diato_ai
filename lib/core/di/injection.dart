@@ -12,6 +12,8 @@ import 'package:diato_ai/features/map/data/repositories/station_repository_impl.
 import 'package:diato_ai/features/map/domain/repositories/station_repository.dart';
 import 'package:diato_ai/features/scanner/data/repositories/scanner_repository_impl.dart';
 import 'package:diato_ai/features/scanner/domain/repositories/scanner_repository.dart';
+import 'package:diato_ai/features/species/data/repositories/species_repository_impl.dart';
+import 'package:diato_ai/features/species/domain/repositories/species_repository.dart';
 import 'package:diato_ai/features/home/domain/repository/home_repository.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -41,4 +43,5 @@ Future<void> setupInjection() async {
   getIt.registerSingleton<DiatomCalculatorRepository>(
     DiatomCalculatorRepositoryImpl(getIt()),
   );
+  getIt.registerSingleton<SpeciesRepository>(SpeciesRepositoryImpl(getIt()));
 }

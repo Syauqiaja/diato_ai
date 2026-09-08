@@ -1,5 +1,6 @@
 import 'package:diato_ai/features/scanner/data/models/detected_diatom.dart';
 import 'package:diato_ai/features/shared/widgets/spacings.dart';
+import 'package:diato_ai/features/species/presentation/species_detail_screen.dart';
 import 'package:diato_ai/utils/extensions/context_extensions.dart';
 import 'package:flutter/material.dart';
 
@@ -94,6 +95,30 @@ class DetectedDiatomCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               vSpace(8),
+              // Through to the explanation, when this class maps to a species
+              // in the console catalogue.
+              if (diatom.catalogueSpeciesId != null) ...[
+                SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton.icon(
+                    onPressed: () => SpeciesDetailScreen.push(
+                      context,
+                      diatom.catalogueSpeciesId!,
+                    ),
+                    icon: const Icon(Icons.menu_book_outlined, size: 18),
+                    label: const Text('Pelajari spesies ini'),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: context.colorScheme.primary,
+                      side: BorderSide(color: context.colorScheme.primary),
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                  ),
+                ),
+                vSpace(16),
+              ],
               // Genus badge
               if (diatom.genus != null)
                 Container(

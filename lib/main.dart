@@ -1,3 +1,5 @@
+import 'package:diato_ai/features/species/presentation/cubit/species_detail_cubit.dart';
+import 'package:diato_ai/features/species/presentation/cubit/species_list_cubit.dart';
 import 'package:diato_ai/core/routes/route.dart';
 import 'package:diato_ai/core/theme/theme.dart';
 import 'package:diato_ai/features/auth/core/cubit/auth_cubit.dart';
@@ -33,6 +35,8 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => CourseListCubit(getIt())),
         BlocProvider(create: (context) => ExploreIndexCubit(getIt())),
         BlocProvider(create: (context) => CourseDetailCubit(getIt())),
+        BlocProvider(create: (context) => SpeciesDetailCubit(getIt())),
+        BlocProvider(create: (context) => SpeciesListCubit(getIt())),
         BlocProvider(create: (context) => StationListCubit(getIt())),
         BlocProvider(create: (context) => StationDetailCubit(getIt())),
       ],

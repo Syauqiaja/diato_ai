@@ -3,12 +3,11 @@ import 'package:diato_ai/core/theme/theme.dart';
 import 'package:diato_ai/features/explore/presentation/cubits/cubit/course_detail_cubit.dart';
 import 'package:diato_ai/features/explore/presentation/cubits/explore_index/explore_index_cubit.dart';
 import 'package:diato_ai/features/shared/widgets/linear_line.dart';
+import 'package:diato_ai/features/shared/widgets/rich_html_content.dart';
 import 'package:diato_ai/features/shared/widgets/spacings.dart';
 import 'package:diato_ai/utils/extensions/context_extensions.dart';
-import 'package:easy_image_viewer/easy_image_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:go_router/go_router.dart';
 
 class CourseDetailScreen extends StatefulWidget {
@@ -180,125 +179,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
                             ),
                           ),
                         vSpace(24),
-                        if (content != null)
-                              HtmlWidget(
-                                content,
-                                enableCaching: false,
-                                renderMode: RenderMode.column,
-                                buildAsync: true,
-                                customWidgetBuilder: (element) {
-                                  switch (element.localName) {
-                                    case "h1":
-                                      return Padding(
-                                        padding: const EdgeInsets.only(
-                                          top: 8,
-                                          bottom: 4,
-                                          left: 8,
-                                        ),
-                                        child: Text(
-                                          element.text,
-                                          style: TextStyle(
-                                            fontSize: 22,
-                                            height: 1,
-                                            fontFamily: "AndersonGrotesk",
-                                            fontWeight: FontWeight.w400,
-                                          ),
-                                        ),
-                                      );
-                                    case "h2":
-                                      return Padding(
-                                        padding: const EdgeInsets.only(
-                                          top: 20,
-                                          bottom: 4,
-                                          left: 8,
-                                        ),
-                                        child: Text(
-                                          element.text,
-                                          style: TextStyle(
-                                            fontSize: 18,
-                                            height: 1,
-                                            fontFamily: "AndersonGrotesk",
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                        ),
-                                      );
-                                    case "h3":
-                                      return Padding(
-                                        padding: const EdgeInsets.only(
-                                          top: 8,
-                                          left: 8,
-                                        ),
-                                        child: Text(
-                                          element.text,
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            height: 1,
-                                            fontFamily: "AndersonGrotesk",
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                        ),
-                                      );
-                                    case "h4":
-                                      return Padding(
-                                        padding: const EdgeInsets.only(
-                                          top: 8,
-                                          left: 8,
-                                        ),
-                                        child: Text(
-                                          element.text,
-                                          style: TextStyle(
-                                            fontSize: 14,
-                                            height: 1,
-                                            fontFamily: "AndersonGrotesk",
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                        ),
-                                      );
-                                    case "h5":
-                                      return Padding(
-                                        padding: const EdgeInsets.only(
-                                          top: 8,
-                                          left: 8,
-                                        ),
-                                        child: Text(
-                                          element.text,
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            height: 1,
-                                            fontFamily: "AndersonGrotesk",
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                        ),
-                                      );
-                                    case "img":
-                                      final url = element.attributes['src'] ?? "";
-                                      return Padding(
-                                        padding: const EdgeInsets.symmetric(vertical: 16),
-                                        child: GestureDetector(
-                                          onTap: () {
-                                            showImageViewerPager(
-                                              context,
-                                              SingleImageProvider(NetworkImage(url)),
-                                              immersive: false,
-                                              useSafeArea: true,
-                                              infinitelyScrollable: false,
-                                              backgroundColor: Colors.black54,
-                                            );
-                                          },
-                                          child: Image.network(url, fit: BoxFit.contain),
-                                        ),
-                                      );
-                                    default:
-                                      return null;
-                                  }
-                                },
-                                textStyle: TextStyle(
-                                  fontFamily: "georgia",
-                                  height: 1.4,
-                                  color: Theme.of(context).textTheme.bodyLarge?.color,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
+                        if (content != null) RichHtmlContent(content),
                           vSpace(48),
                           BlocBuilder<ExploreIndexCubit, ExploreIndexState>(
                             builder: (context, indexState) {

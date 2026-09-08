@@ -22,6 +22,10 @@ class DetectedDiatom {
   final String? genus;
   final String? imageUrl;
 
+  /// Id of the console catalogue row this class maps to, when there is one.
+  /// Only then is there an explanation to open.
+  final int? catalogueSpeciesId;
+
   const DetectedDiatom({
     required this.label,
     required this.species,
@@ -33,10 +37,12 @@ class DetectedDiatom {
     this.shape,
     this.genus,
     this.imageUrl,
+    this.catalogueSpeciesId,
   });
 
   factory DetectedDiatom.fromJson(Map<String, dynamic> json) {
     final species = json['species'] as Map<String, dynamic>?;
+    final catalogue = json['catalogue_species'] as Map<String, dynamic>?;
 
     return DetectedDiatom(
       label: json['label'] as String? ?? '',
@@ -52,6 +58,7 @@ class DetectedDiatom {
       shape: json['shape'] as String? ?? species?['shape'] as String?,
       genus: species?['genus'] as String?,
       imageUrl: resolveAssetUrl(species?['image'] as String?),
+      catalogueSpeciesId: (catalogue?['id'] as num?)?.toInt(),
     );
   }
 

@@ -7,6 +7,7 @@ import 'package:diato_ai/features/explore/presentation/explore_screen.dart';
 import 'package:diato_ai/features/home/presentation/home_screen.dart';
 import 'package:diato_ai/features/map/presentation/map_screen.dart';
 import 'package:diato_ai/features/scanner/presentation/scanner_screen.dart';
+import 'package:diato_ai/features/species/presentation/species_detail_screen.dart';
 import 'package:diato_ai/features/setting/presentation/app_info_screen.dart';
 import 'package:diato_ai/features/setting/presentation/developer_info_screen.dart';
 import 'package:diato_ai/features/setting/presentation/settings_screen.dart';
@@ -81,6 +82,14 @@ class AppRoutes {
         builder: (context, state) {
           final courseId = int.parse(state.pathParameters['courseId']!);
           return CourseDetailScreen(courseId: courseId);
+        },
+      ),
+      GoRoute(
+        path: SpeciesDetailScreen.routePath,
+        name: SpeciesDetailScreen.routeName,
+        builder: (context, state) {
+          final speciesId = int.parse(state.pathParameters['speciesId']!);
+          return SpeciesDetailScreen(speciesId: speciesId);
         },
       ),
       GoRoute(
