@@ -2,7 +2,10 @@ import 'package:diato_ai/core/assets/assets.dart';
 import 'package:diato_ai/core/theme/theme.dart';
 import 'package:diato_ai/features/explore/presentation/course_detail_screen.dart';
 import 'package:diato_ai/features/explore/presentation/cubits/explore_index/explore_index_cubit.dart';
+import 'package:diato_ai/features/guides/presentation/cubit/guide_list_cubit.dart';
+import 'package:diato_ai/features/guides/presentation/guide_detail_screen.dart';
 import 'package:diato_ai/features/shared/models/course_item.dart';
+import 'package:diato_ai/features/shared/models/guide_item.dart';
 import 'package:diato_ai/features/species/data/models/species_summary.dart';
 import 'package:diato_ai/features/species/presentation/cubit/species_list_cubit.dart';
 import 'package:diato_ai/features/species/presentation/species_detail_screen.dart';
@@ -30,6 +33,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<ExploreIndexCubit>().fetchCourses();
+      context.read<GuideListCubit>().fetchGuides();
       context.read<SpeciesListCubit>().fetchSpecies();
     });
   }
@@ -82,6 +86,44 @@ class _ExploreScreenState extends State<ExploreScreen> {
         }
 
         return SizedBox.shrink();
+      },
+    );
+  }
+
+  /// The procedures, listed the same way as the species below them.
+  Widget _guidesSection(BuildContext context) {
+    return BlocBuilder<GuideListCubit, GuideListState>(
+      builder: (context, state) {
+        if (state is GuideListLoading) {
+          return ListView.separated(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: 2,
+            separatorBuilder: (context, index) => vSpace(12),
+            itemBuilder: (context, index) => const _SpeciesItemSkeleton(),
+          );
+        }
+
+        if (state is! GuideListData || state.guides.isEmpty) {
+          return SizedBox.shrink();
+        }
+
+        final guides = state.guides;
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            _sectionTitle(context, 'Panduan'),
+            vSpace(16),
+            ListView.separated(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: guides.length,
+              separatorBuilder: (context, index) => vSpace(12),
+              itemBuilder: (context, index) => _GuideItem(guide: guides[index], number: index + 1),
+            ),
+            vSpace(32),
+          ],
+        );
       },
     );
   }
@@ -141,6 +183,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
               vSpace(16),
               _coursesSection(context),
               vSpace(32),
+              _guidesSection(context),
               _sectionTitle(context, 'Diatom di Sungai Brantas'),
               vSpace(16),
               _speciesSection(context),
@@ -209,6 +252,54 @@ class _CourseCard extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// One guide in the list, styled like [_SpeciesItem].
+class _GuideItem extends StatelessWidget {
+  final GuideItem guide;
+  final int number;
+  const _GuideItem({required this.guide, required this.number});
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: AppTheme.canvasColor,
+      borderRadius: BorderRadius.circular(16),
+      child: ListTile(
+        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        leading: Container(
+          width: 60,
+          height: 60,
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
+          clipBehavior: Clip.hardEdge,
+          child: guide.cover != null
+              ? Image.network(
+                  guide.cover!,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Image.asset(Assets.diatomi, fit: BoxFit.cover);
+                  },
+                )
+              : Image.asset(Assets.diatomi, fit: BoxFit.cover),
+        ),
+        title: Text(
+          guide.title,
+          style: context.textTheme.titleMedium?.copyWith(
+            color: context.colorScheme.primary,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        subtitle: Text(
+          'Panduan $number',
+          style: context.textTheme.bodySmall?.copyWith(
+            color: context.colorScheme.primary.withValues(alpha: 0.6),
+          ),
+        ),
+        trailing: Icon(Icons.arrow_forward_ios, size: 16, color: context.colorScheme.primary),
+        onTap: () => GuideDetailScreen.push(context, guide.id),
       ),
     );
   }

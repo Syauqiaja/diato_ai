@@ -6,6 +6,8 @@ import 'package:diato_ai/features/auth/core/cubit/auth_cubit.dart';
 import 'package:diato_ai/features/courses/presentation/cubit/course_list_cubit.dart';
 import 'package:diato_ai/features/explore/presentation/cubits/cubit/course_detail_cubit.dart';
 import 'package:diato_ai/features/explore/presentation/cubits/explore_index/explore_index_cubit.dart';
+import 'package:diato_ai/features/guides/presentation/cubit/guide_detail_cubit.dart';
+import 'package:diato_ai/features/guides/presentation/cubit/guide_list_cubit.dart';
 import 'package:diato_ai/features/home/presentation/cubit/article_cubit.dart';
 import 'package:diato_ai/features/map/presentation/cubit/station_detail_cubit.dart';
 import 'package:diato_ai/features/map/presentation/cubit/station_list_cubit.dart';
@@ -35,6 +37,8 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => CourseListCubit(getIt())),
         BlocProvider(create: (context) => ExploreIndexCubit(getIt())),
         BlocProvider(create: (context) => CourseDetailCubit(getIt())),
+        BlocProvider(create: (context) => GuideListCubit(getIt())),
+        BlocProvider(create: (context) => GuideDetailCubit(getIt())),
         BlocProvider(create: (context) => SpeciesDetailCubit(getIt())),
         BlocProvider(create: (context) => SpeciesListCubit(getIt())),
         BlocProvider(create: (context) => StationListCubit(getIt())),

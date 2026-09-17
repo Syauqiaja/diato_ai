@@ -5,6 +5,8 @@ import 'package:diato_ai/features/auth/login/data/login_repository_impl.dart';
 import 'package:diato_ai/features/auth/register/data/register_repository_impl.dart';
 import 'package:diato_ai/features/courses/data/repositories/course_repository_impl.dart';
 import 'package:diato_ai/features/courses/domain/repositories/course_repository.dart';
+import 'package:diato_ai/features/guides/data/repositories/guide_repository_impl.dart';
+import 'package:diato_ai/features/guides/domain/repositories/guide_repository.dart';
 import 'package:diato_ai/features/diatom_calculator/data/repositories/diatom_calculator_repository_impl.dart';
 import 'package:diato_ai/features/diatom_calculator/domain/repositories/diatom_calculator_repository.dart';
 import 'package:diato_ai/features/home/data/repositories/home_repository_impl.dart';
@@ -38,6 +40,7 @@ Future<void> setupInjection() async {
   );
   getIt.registerSingleton<HomeRepository>(HomeRepositoryImpl(getIt()));
   getIt.registerSingleton<CourseRepository>(CourseRepositoryImpl(getIt()));
+  getIt.registerSingleton<GuideRepository>(GuideRepositoryImpl(getIt()));
   getIt.registerSingleton<StationRepository>(StationRepositoryImpl(getIt()));
   getIt.registerSingleton<ScannerRepository>(ScannerRepositoryImpl(getIt()));
   getIt.registerSingleton<DiatomCalculatorRepository>(
