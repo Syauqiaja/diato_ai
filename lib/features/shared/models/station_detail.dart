@@ -1,5 +1,6 @@
 import 'package:diato_ai/core/assets/constants.dart';
 import 'package:diato_ai/features/shared/models/found_species.dart';
+import 'package:diato_ai/features/shared/models/station.dart';
 
 final class StationDetail {
   final int id;
@@ -12,6 +13,9 @@ final class StationDetail {
   final int totalSpeciesCount;
   final int totalIndividualsCount;
 
+  /// Sampling years this station has species records for, oldest first.
+  final List<int> years;
+
   StationDetail({
     required this.id,
     required this.title,
@@ -22,10 +26,32 @@ final class StationDetail {
     required this.foundSpecies,
     required this.totalSpeciesCount,
     required this.totalIndividualsCount,
+    required this.years,
   });
 
   /// Absolute url for [image]. See [Station.imageUrl].
   String? get imageUrl => resolveAssetUrl(image);
+
+  /// Species found in [year], or across every year when [year] is null, one
+  /// entry per species in the order the API listed them.
+  List<StationSpeciesSummary> speciesFor(int? year) {
+    final records = <Object, List<FoundSpecies>>{};
+
+    for (final record in foundSpecies) {
+      if (year != null && record.year != year) continue;
+      records.putIfAbsent(record.speciesId ?? record.name, () => []).add(record);
+    }
+
+    return records.values.map((group) {
+      final years = group.map((record) => record.year).whereType<int>().toSet().toList()..sort();
+
+      return StationSpeciesSummary(
+        name: group.first.name,
+        years: years,
+        count: group.fold(0, (sum, record) => sum + record.count),
+      );
+    }).toList();
+  }
 
   factory StationDetail.fromJson(Map<String, dynamic> json) {
     final species = json['found_species'] as List<dynamic>? ?? const [];
@@ -40,6 +66,7 @@ final class StationDetail {
       foundSpecies: species.map((json) => FoundSpecies.fromJson(json as Map<String, dynamic>)).toList(),
       totalSpeciesCount: (json['total_species_count'] as num?)?.toInt() ?? 0,
       totalIndividualsCount: (json['total_individuals_count'] as num?)?.toInt() ?? 0,
+      years: parseYears(json['years']),
     );
   }
 
@@ -54,6 +81,7 @@ final class StationDetail {
       'found_species': foundSpecies.map((species) => species.toJson()).toList(),
       'total_species_count': totalSpeciesCount,
       'total_individuals_count': totalIndividualsCount,
+      'years': years,
     };
   }
 }

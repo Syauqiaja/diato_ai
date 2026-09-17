@@ -1,6 +1,7 @@
 import 'package:diato_ai/core/assets/assets.dart';
 import 'package:diato_ai/core/theme/theme.dart';
 import 'package:diato_ai/features/map/presentation/cubit/station_detail_cubit.dart';
+import 'package:diato_ai/features/map/presentation/widgets/year_filter_chips.dart';
 import 'package:diato_ai/features/shared/models/station_detail.dart';
 import 'package:diato_ai/features/shared/widgets/image_viewer.dart';
 import 'package:diato_ai/features/shared/widgets/spacings.dart';
@@ -9,14 +10,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 
-/// Opens the station detail bottom sheet and kicks off the detail request.
+/// Opens the station detail bottom sheet and kicks off the detail request,
+/// starting on [year] when the station has records for it.
 ///
 /// [context] must be a context below the [StationDetailCubit] provider; the
 /// cubit is handed to the modal route explicitly because modal routes are
 /// built from the navigator's context, not this one.
-Future<void> showStationDetailSheet(BuildContext context, int stationId) {
+Future<void> showStationDetailSheet(BuildContext context, int stationId, {int? year}) {
   final cubit = context.read<StationDetailCubit>();
-  cubit.getStationDetail(stationId);
+  cubit.getStationDetail(stationId, year: year);
 
   return showModalBottomSheet(
     context: context,
@@ -62,6 +64,7 @@ class StationDetailSheet extends StatelessWidget {
               if (state is StationDetailLoaded) {
                 return _StationDetailContent(
                   station: state.station,
+                  selectedYear: state.selectedYear,
                   scrollController: scrollController,
                 );
               }
@@ -83,13 +86,20 @@ class StationDetailSheet extends StatelessWidget {
 
 class _StationDetailContent extends StatelessWidget {
   final StationDetail station;
+  final int? selectedYear;
   final ScrollController scrollController;
 
-  const _StationDetailContent({required this.station, required this.scrollController});
+  const _StationDetailContent({
+    required this.station,
+    required this.selectedYear,
+    required this.scrollController,
+  });
 
   @override
   Widget build(BuildContext context) {
     final imageUrl = station.imageUrl;
+    final species = station.speciesFor(selectedYear);
+    final individuals = species.fold(0, (sum, entry) => sum + entry.count);
 
     return _SheetShell(
       scrollController: scrollController,
@@ -147,12 +157,12 @@ class _StationDetailContent extends StatelessWidget {
           children: [
             _StatChip(
               icon: Icons.biotech_outlined,
-              label: '${station.totalSpeciesCount} spesies',
+              label: '${species.length} spesies',
             ),
             const SizedBox(width: 8),
             _StatChip(
               icon: Icons.grain,
-              label: '${station.totalIndividualsCount} individu',
+              label: '$individuals individu',
             ),
           ],
         ),
@@ -169,15 +179,43 @@ class _StationDetailContent extends StatelessWidget {
             'Spesies Ditemukan',
             style: context.textTheme.titleMedium?.copyWith(color: AppTheme.primaryTextColor),
           ),
+          if (station.years.isNotEmpty) ...[
+            vSpace(8),
+            YearFilterChips(
+              years: station.years,
+              selectedYear: selectedYear,
+              onSelected: context.read<StationDetailCubit>().selectYear,
+            ),
+          ],
           vSpace(8),
-          ...station.foundSpecies.map(
-            (species) => Padding(
+          if (species.isEmpty)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 6),
+              child: Text(
+                'Tidak ada spesies tercatat pada tahun $selectedYear',
+                style: context.textTheme.bodyMedium,
+              ),
+            ),
+          ...species.map(
+            (entry) => Padding(
               padding: const EdgeInsets.symmetric(vertical: 6),
               child: Row(
                 children: [
-                  Expanded(child: Text(species.name, style: context.textTheme.bodyMedium)),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(entry.name, style: context.textTheme.bodyMedium),
+                        if (selectedYear == null && entry.years.isNotEmpty)
+                          Text(
+                            entry.years.join(' · '),
+                            style: context.textTheme.bodySmall?.copyWith(color: Colors.grey[600]),
+                          ),
+                      ],
+                    ),
+                  ),
                   Text(
-                    '${species.count}',
+                    '${entry.count}',
                     style: context.textTheme.bodyMedium?.copyWith(
                       color: AppTheme.primaryTextColor,
                       fontWeight: FontWeight.bold,

@@ -1,6 +1,7 @@
 import 'package:diato_ai/core/theme/theme.dart';
 import 'package:diato_ai/features/map/presentation/cubit/station_list_cubit.dart';
 import 'package:diato_ai/features/map/presentation/widgets/station_detail_sheet.dart';
+import 'package:diato_ai/features/map/presentation/widgets/year_filter_chips.dart';
 import 'package:diato_ai/features/shared/models/station.dart';
 import 'package:diato_ai/utils/extensions/context_extensions.dart';
 import 'package:flutter/material.dart';
@@ -71,6 +72,23 @@ class _MapScreenState extends State<MapScreen> {
               LinearLine(),
           
               SizedBox(height: 16),
+
+              BlocBuilder<StationListCubit, StationListState>(
+                builder: (context, state) {
+                  if (state is! StationListLoaded || state.years.isEmpty) {
+                    return const SizedBox.shrink();
+                  }
+
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: YearFilterChips(
+                      years: state.years,
+                      selectedYear: state.selectedYear,
+                      onSelected: context.read<StationListCubit>().selectYear,
+                    ),
+                  );
+                },
+              ),
           
               Expanded(
                 child: ClipRRect(
@@ -97,7 +115,10 @@ class _MapScreenState extends State<MapScreen> {
                       }
 
                       if (state is StationListLoaded) {
-                        return _StationMap(stations: state.stations);
+                        return _StationMap(
+                          stations: state.visibleStations,
+                          selectedYear: state.selectedYear,
+                        );
                       }
 
                       return _MapPlaceholder(
@@ -118,7 +139,10 @@ class _MapScreenState extends State<MapScreen> {
 class _StationMap extends StatelessWidget {
   final List<Station> stations;
 
-  const _StationMap({required this.stations});
+  /// Year the stations are filtered to, handed on to the detail sheet.
+  final int? selectedYear;
+
+  const _StationMap({required this.stations, required this.selectedYear});
 
   @override
   Widget build(BuildContext context) {
@@ -155,7 +179,7 @@ class _StationMap extends StatelessWidget {
                     height: 40,
                     alignment: Alignment.topCenter,
                     child: GestureDetector(
-                      onTap: () => showStationDetailSheet(context, station.id),
+                      onTap: () => showStationDetailSheet(context, station.id, year: selectedYear),
                       child: const Icon(
                         Icons.location_on,
                         size: 40,
@@ -178,7 +202,7 @@ class _StationMap extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
-                  'Belum ada stasiun',
+                  selectedYear == null ? 'Belum ada stasiun' : 'Tidak ada stasiun pada tahun $selectedYear',
                   style: context.textTheme.bodyMedium?.copyWith(color: AppTheme.primaryTextColor),
                 ),
               ),

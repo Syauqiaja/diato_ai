@@ -71,4 +71,50 @@ void main() {
     expect(detail.foundSpecies, isEmpty);
     expect(detail.totalIndividualsCount, 0);
   });
+
+  test('Station.fromJson reads the years with species records', () {
+    final station = Station.fromJson({
+      'id': 4,
+      'title': 'Stasiun 1',
+      'description': '',
+      'latitude': 0,
+      'longitude': 0,
+      'image': null,
+      'years': [1998, 2008, 2023],
+    });
+
+    expect(station.years, [1998, 2008, 2023]);
+  });
+
+  group('StationDetail.speciesFor', () {
+    final detail = StationDetail.fromJson({
+      'id': 5,
+      'title': 'Stasiun 1',
+      'description': '',
+      'latitude': 0,
+      'longitude': 0,
+      'image': null,
+      'years': [1998, 2023],
+      'found_species': [
+        {'id': 1, 'species_id': 10, 'name': 'Cymbella', 'year': 1998, 'count': 2},
+        {'id': 2, 'species_id': 11, 'name': 'Navicula', 'year': 1998, 'count': 3},
+        {'id': 3, 'species_id': 10, 'name': 'Cymbella', 'year': 2023, 'count': 4},
+      ],
+    });
+
+    test('merges a species across every year when no year is picked', () {
+      final species = detail.speciesFor(null);
+
+      expect(species.map((entry) => entry.name), ['Cymbella', 'Navicula']);
+      expect(species.first.years, [1998, 2023]);
+      expect(species.first.count, 6);
+    });
+
+    test('keeps only the records of the picked year', () {
+      final species = detail.speciesFor(2023);
+
+      expect(species.map((entry) => entry.name), ['Cymbella']);
+      expect(species.single.count, 4);
+    });
+  });
 }

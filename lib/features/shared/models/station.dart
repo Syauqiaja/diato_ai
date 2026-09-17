@@ -9,6 +9,9 @@ final class Station {
   final String? image;
   final int speciesCount;
 
+  /// Sampling years this station has species records for, oldest first.
+  final List<int> years;
+
   Station({
     required this.id,
     required this.title,
@@ -17,6 +20,7 @@ final class Station {
     required this.longitude,
     required this.image,
     required this.speciesCount,
+    required this.years,
   });
 
   /// Absolute url for [image]. The API returns a root-relative `/storage/...`
@@ -32,6 +36,7 @@ final class Station {
       longitude: (json['longitude'] as num).toDouble(),
       image: json['image'] as String?,
       speciesCount: (json['species_count'] as num?)?.toInt() ?? 0,
+      years: parseYears(json['years']),
     );
   }
 
@@ -44,6 +49,12 @@ final class Station {
       'longitude': longitude,
       'image': image,
       'species_count': speciesCount,
+      'years': years,
     };
   }
+}
+
+/// Reads a JSON list of years, tolerating a missing field from older APIs.
+List<int> parseYears(Object? json) {
+  return (json as List<dynamic>? ?? const []).map((year) => (year as num).toInt()).toList();
 }
