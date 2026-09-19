@@ -14,23 +14,10 @@ final class StationListLoading extends StationListState {}
 final class StationListLoaded extends StationListState {
   final List<Station> stations;
 
-  /// Year the map is filtered to; null shows every station.
-  final int? selectedYear;
-
-  const StationListLoaded(this.stations, {this.selectedYear});
-
-  /// Every sampling year recorded at any station, oldest first.
-  List<int> get years => (stations.expand((station) => station.years).toSet().toList()..sort());
-
-  /// Stations with species records in [selectedYear].
-  List<Station> get visibleStations {
-    final year = selectedYear;
-    if (year == null) return stations;
-    return stations.where((station) => station.years.contains(year)).toList();
-  }
+  const StationListLoaded(this.stations);
 
   @override
-  List<Object> get props => [stations, selectedYear ?? 0];
+  List<Object> get props => [stations];
 }
 
 final class StationListError extends StationListState {

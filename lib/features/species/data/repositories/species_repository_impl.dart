@@ -3,38 +3,11 @@ import 'package:dio/dio.dart';
 
 import '../../domain/repositories/species_repository.dart';
 import '../models/species_detail.dart';
-import '../models/species_summary.dart';
 
 final class SpeciesRepositoryImpl extends SpeciesRepository {
   final Dio dio;
 
   SpeciesRepositoryImpl(this.dio);
-
-  @override
-  Future<Result<List<SpeciesSummary>>> getSpecies({String? query}) async {
-    try {
-      final response = await dio.get(
-        '/species-catalogue',
-        queryParameters: query != null ? {'q': query} : null,
-      );
-
-      if (response.statusCode == 200) {
-        final data = response.data['data'] as List<dynamic>;
-        return Result.success(
-          data
-              .map((json) => SpeciesSummary.fromJson(json as Map<String, dynamic>))
-              .toList(),
-        );
-      }
-      return Result.failure(
-        response.data['message'] ?? 'Gagal memuat daftar spesies',
-      );
-    } on DioException catch (e) {
-      return Result.failure(_messageFor(e, 'Gagal memuat daftar spesies'));
-    } catch (e) {
-      return Result.failure('Unexpected error: $e');
-    }
-  }
 
   @override
   Future<Result<SpeciesDetail>> getSpeciesDetail(int speciesId) async {

@@ -1,7 +1,6 @@
 import 'package:diato_ai/core/assets/assets.dart';
 import 'package:diato_ai/core/theme/theme.dart';
 import 'package:diato_ai/features/shared/widgets/linear_line.dart';
-import 'package:diato_ai/features/shared/widgets/rich_html_content.dart';
 import 'package:diato_ai/features/shared/widgets/spacings.dart';
 import 'package:diato_ai/features/species/presentation/cubit/species_detail_cubit.dart';
 import 'package:diato_ai/utils/extensions/context_extensions.dart';
@@ -9,8 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-/// The explanation written for one catalogue species, alongside its picture and
-/// the pollution tolerance scores the water quality index uses.
+/// One catalogue species: its picture and the pollution tolerance scores the
+/// water quality index uses.
 class SpeciesDetailScreen extends StatefulWidget {
   static const String routeName = 'species-detail';
   static const String routePath = '/species/:speciesId';
@@ -91,22 +90,12 @@ class _SpeciesDetailScreenState extends State<SpeciesDetailScreen> {
                           ),
                         ),
                         Text(
-                          detail?.title ?? 'Spesies',
+                          detail?.name ?? 'Spesies',
                           style: context.textTheme.displayLarge?.copyWith(
                             color: textColor,
                             height: 0.9,
                           ),
                         ),
-                        if (detail != null && detail.title != detail.name) ...[
-                          vSpace(4),
-                          Text(
-                            detail.name,
-                            style: context.textTheme.bodyMedium?.copyWith(
-                              color: textColor.withValues(alpha: 0.7),
-                              fontStyle: FontStyle.italic,
-                            ),
-                          ),
-                        ],
                         vSpace(16),
                         const LinearLine(),
                         vSpace(24),
@@ -151,16 +140,6 @@ class _SpeciesDetailScreenState extends State<SpeciesDetailScreen> {
                             indicator: detail.indicator!,
                           ),
                         ],
-                        vSpace(24),
-                        if (detail != null && detail.hasContent)
-                          RichHtmlContent(detail.content!)
-                        else if (detail != null)
-                          Text(
-                            'Penjelasan untuk spesies ini belum ditulis.',
-                            style: context.textTheme.bodyMedium?.copyWith(
-                              color: Colors.grey[600],
-                            ),
-                          ),
                         vSpace(kBotbarHeight + 24),
                       ],
                     ),

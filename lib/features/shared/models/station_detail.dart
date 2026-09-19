@@ -1,6 +1,7 @@
 import 'package:diato_ai/core/assets/constants.dart';
 import 'package:diato_ai/features/shared/models/found_species.dart';
 import 'package:diato_ai/features/shared/models/station.dart';
+import 'package:diato_ai/features/shared/models/station_physicochemistry.dart';
 
 final class StationDetail {
   final int id;
@@ -12,6 +13,9 @@ final class StationDetail {
   final List<FoundSpecies> foundSpecies;
   final int totalSpeciesCount;
   final int totalIndividualsCount;
+
+  /// Physicochemical readings, in the order the API listed them.
+  final List<StationPhysicochemistry> physicochemistry;
 
   /// Sampling years this station has species records for, oldest first.
   final List<int> years;
@@ -26,6 +30,7 @@ final class StationDetail {
     required this.foundSpecies,
     required this.totalSpeciesCount,
     required this.totalIndividualsCount,
+    required this.physicochemistry,
     required this.years,
   });
 
@@ -55,6 +60,7 @@ final class StationDetail {
 
   factory StationDetail.fromJson(Map<String, dynamic> json) {
     final species = json['found_species'] as List<dynamic>? ?? const [];
+    final physicochemistry = json['physicochemistry'] as List<dynamic>? ?? const [];
 
     return StationDetail(
       id: json['id'] as int,
@@ -66,6 +72,9 @@ final class StationDetail {
       foundSpecies: species.map((json) => FoundSpecies.fromJson(json as Map<String, dynamic>)).toList(),
       totalSpeciesCount: (json['total_species_count'] as num?)?.toInt() ?? 0,
       totalIndividualsCount: (json['total_individuals_count'] as num?)?.toInt() ?? 0,
+      physicochemistry: physicochemistry
+          .map((json) => StationPhysicochemistry.fromJson(json as Map<String, dynamic>))
+          .toList(),
       years: parseYears(json['years']),
     );
   }
@@ -81,6 +90,7 @@ final class StationDetail {
       'found_species': foundSpecies.map((species) => species.toJson()).toList(),
       'total_species_count': totalSpeciesCount,
       'total_individuals_count': totalIndividualsCount,
+      'physicochemistry': physicochemistry.map((reading) => reading.toJson()).toList(),
       'years': years,
     };
   }

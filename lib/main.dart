@@ -1,13 +1,10 @@
 import 'package:diato_ai/features/species/presentation/cubit/species_detail_cubit.dart';
-import 'package:diato_ai/features/species/presentation/cubit/species_list_cubit.dart';
 import 'package:diato_ai/core/routes/route.dart';
 import 'package:diato_ai/core/theme/theme.dart';
 import 'package:diato_ai/features/auth/core/cubit/auth_cubit.dart';
-import 'package:diato_ai/features/courses/presentation/cubit/course_list_cubit.dart';
-import 'package:diato_ai/features/explore/presentation/cubits/cubit/course_detail_cubit.dart';
-import 'package:diato_ai/features/explore/presentation/cubits/explore_index/explore_index_cubit.dart';
-import 'package:diato_ai/features/guides/presentation/cubit/guide_detail_cubit.dart';
-import 'package:diato_ai/features/guides/presentation/cubit/guide_list_cubit.dart';
+import 'package:diato_ai/features/contents/presentation/cubit/content_detail_cubit.dart';
+import 'package:diato_ai/features/contents/presentation/cubit/content_list_cubit.dart';
+import 'package:diato_ai/features/contents/presentation/cubit/content_search_cubit.dart';
 import 'package:diato_ai/features/home/presentation/cubit/article_cubit.dart';
 import 'package:diato_ai/features/map/presentation/cubit/station_detail_cubit.dart';
 import 'package:diato_ai/features/map/presentation/cubit/station_list_cubit.dart';
@@ -34,13 +31,10 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider(create: (context) => AuthCubit(getIt(), getIt(), getIt())..checkAuthStatus()),
         BlocProvider(create: (context) => ArticleCubit(getIt())..getArticles()),
-        BlocProvider(create: (context) => CourseListCubit(getIt())),
-        BlocProvider(create: (context) => ExploreIndexCubit(getIt())),
-        BlocProvider(create: (context) => CourseDetailCubit(getIt())),
-        BlocProvider(create: (context) => GuideListCubit(getIt())),
-        BlocProvider(create: (context) => GuideDetailCubit(getIt())),
+        BlocProvider(create: (context) => ContentListCubit(getIt())),
+        BlocProvider(create: (context) => ContentDetailCubit(getIt())),
+        BlocProvider(create: (context) => ContentSearchCubit(getIt())),
         BlocProvider(create: (context) => SpeciesDetailCubit(getIt())),
-        BlocProvider(create: (context) => SpeciesListCubit(getIt())),
         BlocProvider(create: (context) => StationListCubit(getIt())),
         BlocProvider(create: (context) => StationDetailCubit(getIt())),
       ],

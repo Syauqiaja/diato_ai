@@ -11,9 +11,8 @@ class StationDetailCubit extends Cubit<StationDetailState> {
 
   StationDetailCubit(this._stationRepository) : super(StationDetailInitial());
 
-  /// Fetch a single station with its found species, filtered to [year] when
-  /// the station has records for it.
-  Future<void> getStationDetail(int stationId, {int? year}) async {
+  /// Fetch a single station with its found species and physicochemistry.
+  Future<void> getStationDetail(int stationId) async {
     emit(StationDetailLoading());
 
     try {
@@ -21,23 +20,12 @@ class StationDetailCubit extends Cubit<StationDetailState> {
 
       switch (result) {
         case Success<StationDetail>():
-          emit(StationDetailLoaded(
-            result.value,
-            selectedYear: result.value.years.contains(year) ? year : null,
-          ));
+          emit(StationDetailLoaded(result.value));
         case Failure<StationDetail>():
           emit(StationDetailError(result.message));
       }
     } catch (e) {
       emit(StationDetailError('An unexpected error occurred: $e'));
     }
-  }
-
-  /// Filter the loaded station's species to [year]; null shows every year.
-  void selectYear(int? year) {
-    final current = state;
-    if (current is! StationDetailLoaded) return;
-
-    emit(StationDetailLoaded(current.station, selectedYear: year));
   }
 }

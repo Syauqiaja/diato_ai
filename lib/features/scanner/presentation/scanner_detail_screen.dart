@@ -130,7 +130,7 @@ class _Uploading extends StatelessWidget {
         ),
         vSpace(4),
         Text(
-          'Model CNN sedang mengenali spesies pada gambar.',
+          'Model CNN sedang mengenali genus diatom pada gambar.',
           textAlign: TextAlign.center,
           style: context.textTheme.bodySmall?.copyWith(color: Colors.grey[600]),
         ),
@@ -219,7 +219,7 @@ class _Results extends StatelessWidget {
           vSpace(16),
 
           // The model thresholds its own output: below the cut-off it reports
-          // "unknown" rather than a species. Surfacing that honestly matters
+          // "unknown" rather than a genus. Surfacing that honestly matters
           // more than showing a confident-looking name.
           if (!scan.isConfident) ...[
             Container(
@@ -247,7 +247,7 @@ class _Results extends StatelessWidget {
                         ),
                         vSpace(4),
                         Text(
-                          'Spesies ini mungkin belum ada dalam model, atau '
+                          'Genus ini mungkin belum ada dalam model, atau '
                           'gambarnya kurang jelas. Kandidat terdekat '
                           'ditampilkan di bawah sebagai perkiraan.',
                           style: context.textTheme.bodySmall?.copyWith(

@@ -13,17 +13,12 @@ class CatalogueSpecies extends Equatable {
   final int? sensitivity;
   final int? indicator;
 
-  /// Whether an explanation has been written for this species, so the app knows
-  /// where it is worth offering a way through to the detail screen.
-  final bool hasContent;
-
   const CatalogueSpecies({
     required this.id,
     required this.name,
     this.image,
     this.sensitivity,
     this.indicator,
-    this.hasContent = false,
   });
 
   /// Whether this species carries the scores the index needs.
@@ -36,10 +31,9 @@ class CatalogueSpecies extends Equatable {
       image: json['image'] as String?,
       sensitivity: (json['sensitivity'] as num?)?.toInt(),
       indicator: (json['indicator'] as num?)?.toInt(),
-      hasContent: json['has_content'] as bool? ?? false,
     );
   }
 
   @override
-  List<Object?> get props => [id, name, image, sensitivity, indicator, hasContent];
+  List<Object?> get props => [id, name, image, sensitivity, indicator];
 }

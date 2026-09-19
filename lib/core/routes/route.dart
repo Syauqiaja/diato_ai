@@ -4,7 +4,7 @@ import 'package:diato_ai/features/app_layout/app_layout.dart';
 import 'package:diato_ai/features/auth/login/presentation/login_screen.dart';
 import 'package:diato_ai/features/auth/register/presentation/register_screen.dart';
 import 'package:diato_ai/features/explore/presentation/explore_screen.dart';
-import 'package:diato_ai/features/guides/presentation/guide_detail_screen.dart';
+import 'package:diato_ai/features/contents/presentation/content_detail_screen.dart';
 import 'package:diato_ai/features/home/presentation/home_screen.dart';
 import 'package:diato_ai/features/map/presentation/map_screen.dart';
 import 'package:diato_ai/features/scanner/presentation/scanner_screen.dart';
@@ -16,7 +16,6 @@ import 'package:diato_ai/features/setting/presentation/usage_guide_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../features/explore/presentation/course_detail_screen.dart';
 import '../../features/scanner/presentation/scanner_detail_screen.dart';
 
 class AppRoutes {
@@ -78,19 +77,11 @@ class AppRoutes {
       GoRoute(path: LoginScreen.routePath, name: LoginScreen.routeName, builder: (context, state) => LoginScreen()),
       GoRoute(path: RegisterScreen.routePath, name: RegisterScreen.routeName, builder: (context, state) => RegisterScreen()),
       GoRoute(
-        path: CourseDetailScreen.routePath,
-        name: CourseDetailScreen.routeName,
+        path: ContentDetailScreen.routePath,
+        name: ContentDetailScreen.routeName,
         builder: (context, state) {
-          final courseId = int.parse(state.pathParameters['courseId']!);
-          return CourseDetailScreen(courseId: courseId);
-        },
-      ),
-      GoRoute(
-        path: GuideDetailScreen.routePath,
-        name: GuideDetailScreen.routeName,
-        builder: (context, state) {
-          final guideId = int.parse(state.pathParameters['guideId']!);
-          return GuideDetailScreen(guideId: guideId);
+          final contentId = int.parse(state.pathParameters['contentId']!);
+          return ContentDetailScreen(contentId: contentId);
         },
       ),
       GoRoute(

@@ -14,13 +14,10 @@ final class StationDetailLoading extends StationDetailState {}
 final class StationDetailLoaded extends StationDetailState {
   final StationDetail station;
 
-  /// Year the species list is filtered to; null shows every year.
-  final int? selectedYear;
-
-  const StationDetailLoaded(this.station, {this.selectedYear});
+  const StationDetailLoaded(this.station);
 
   @override
-  List<Object> get props => [station.id, selectedYear ?? 0];
+  List<Object> get props => [station.id];
 }
 
 final class StationDetailError extends StationDetailState {

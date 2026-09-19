@@ -1,13 +1,20 @@
 import 'package:diato_ai/core/assets/constants.dart';
+import 'package:diato_ai/features/species/data/models/species_summary.dart';
 
 /// One candidate identification returned by the CNN, ranked by confidence.
+///
+/// The model identifies GENERA, not species: [name] is a genus such as
+/// `Navicula`, and [genusSpecies] lists the catalogue species filed under it.
 class DetectedDiatom {
-  /// Raw model class label, e.g. `Cocconeis_placentula`.
+  /// Raw model class label, e.g. `Navicula`.
   final String label;
 
-  /// Display name — the catalogue's scientific name when the label resolves to
-  /// a species row, otherwise the label with underscores removed.
-  final String species;
+  /// Display name — the genus. Falls back to the label with underscores
+  /// removed when the backend has no row for it.
+  final String name;
+
+  /// Taxonomic rank of [name]; `genus` for every current model.
+  final String taxonRank;
 
   /// 1 is the model's best guess.
   final int rank;
@@ -19,46 +26,46 @@ class DetectedDiatom {
   final String? habitat;
   final String? size;
   final String? shape;
-  final String? genus;
   final String? imageUrl;
 
-  /// Id of the console catalogue row this class maps to, when there is one.
-  /// Only then is there an explanation to open.
-  final int? catalogueSpeciesId;
+  /// Catalogue species in this genus, each with an explanation to open.
+  final List<SpeciesSummary> genusSpecies;
 
   const DetectedDiatom({
     required this.label,
-    required this.species,
+    required this.name,
     required this.rank,
     required this.confidence,
+    this.taxonRank = 'genus',
     this.description,
     this.habitat,
     this.size,
     this.shape,
-    this.genus,
     this.imageUrl,
-    this.catalogueSpeciesId,
+    this.genusSpecies = const [],
   });
 
   factory DetectedDiatom.fromJson(Map<String, dynamic> json) {
-    final species = json['species'] as Map<String, dynamic>?;
-    final catalogue = json['catalogue_species'] as Map<String, dynamic>?;
+    final genus = json['species'] as Map<String, dynamic>?;
 
     return DetectedDiatom(
       label: json['label'] as String? ?? '',
-      species:
+      name:
+          json['display_name'] as String? ??
           json['scientific_name'] as String? ??
-          species?['scientific_name'] as String? ??
+          genus?['scientific_name'] as String? ??
           (json['label'] as String? ?? '').replaceAll('_', ' '),
+      taxonRank: json['taxon_rank'] as String? ?? 'genus',
       rank: (json['rank'] as num?)?.toInt() ?? 0,
       confidence: (json['confidence'] as num?)?.toDouble() ?? 0.0,
-      description: json['description'] as String? ?? species?['description'] as String?,
-      habitat: json['habitat'] as String? ?? species?['habitat'] as String?,
-      size: json['size_range'] as String? ?? species?['size_range'] as String?,
-      shape: json['shape'] as String? ?? species?['shape'] as String?,
-      genus: species?['genus'] as String?,
-      imageUrl: resolveAssetUrl(species?['image'] as String?),
-      catalogueSpeciesId: (catalogue?['id'] as num?)?.toInt(),
+      description: json['description'] as String? ?? genus?['description'] as String?,
+      habitat: json['habitat'] as String? ?? genus?['habitat'] as String?,
+      size: json['size_range'] as String? ?? genus?['size_range'] as String?,
+      shape: json['shape'] as String? ?? genus?['shape'] as String?,
+      imageUrl: resolveAssetUrl(genus?['image'] as String?),
+      genusSpecies: (json['genus_species'] as List<dynamic>? ?? const [])
+          .map((e) => SpeciesSummary.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
   }
 

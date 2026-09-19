@@ -1,4 +1,3 @@
-import 'package:diato_ai/features/species/presentation/species_detail_screen.dart';
 import 'package:diato_ai/utils/extensions/context_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -80,13 +79,6 @@ class _SpeciesEntryTileState extends State<SpeciesEntryTile> {
               ],
             ),
           ),
-          if (species.hasContent)
-            IconButton(
-              onPressed: () => SpeciesDetailScreen.push(context, species.id),
-              icon: const Icon(Icons.info_outline, size: 20),
-              tooltip: 'Penjelasan ${species.name}',
-              color: Colors.grey[600],
-            ),
           const SizedBox(width: 8),
           SizedBox(
             width: 64,

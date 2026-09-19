@@ -60,14 +60,17 @@ class DetectedDiatomCard extends StatelessWidget {
           ),
         ),
         title: Text(
-          diatom.species,
+          diatom.name,
           style: context.textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.bold,
+            fontStyle: FontStyle.italic,
             color: context.colorScheme.primary,
           ),
         ),
         subtitle: Text(
-          diatom.genus != null ? 'Genus ${diatom.genus}' : 'Diatom',
+          diatom.genusSpecies.isEmpty
+              ? 'Genus'
+              : 'Genus · ${diatom.genusSpecies.length} spesies di katalog',
           style: context.textTheme.bodySmall?.copyWith(
             color: Colors.grey[600],
           ),
@@ -95,53 +98,44 @@ class DetectedDiatomCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               vSpace(8),
-              // Through to the explanation, when this class maps to a species
-              // in the console catalogue.
-              if (diatom.catalogueSpeciesId != null) ...[
-                SizedBox(
-                  width: double.infinity,
-                  child: OutlinedButton.icon(
-                    onPressed: () => SpeciesDetailScreen.push(
-                      context,
-                      diatom.catalogueSpeciesId!,
-                    ),
-                    icon: const Icon(Icons.menu_book_outlined, size: 18),
-                    label: const Text('Pelajari spesies ini'),
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: context.colorScheme.primary,
-                      side: BorderSide(color: context.colorScheme.primary),
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
+              // The model names the genus; the species filed under it in the
+              // catalogue are listed so each explanation is one tap away.
+              if (diatom.genusSpecies.isNotEmpty) ...[
+                Text(
+                  'Spesies dalam genus ini',
+                  style: context.textTheme.bodySmall?.copyWith(
+                    color: Colors.grey[600],
+                    fontWeight: FontWeight.w600,
                   ),
+                ),
+                vSpace(8),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    for (final species in diatom.genusSpecies)
+                      ActionChip(
+                        avatar: Icon(
+                          Icons.menu_book_outlined,
+                          size: 16,
+                          color: context.colorScheme.primary,
+                        ),
+                        label: Text(
+                          species.name,
+                          style: const TextStyle(fontStyle: FontStyle.italic),
+                        ),
+                        onPressed: () =>
+                            SpeciesDetailScreen.push(context, species.id),
+                        side: BorderSide(color: Colors.blue[300]!),
+                        backgroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                      ),
+                  ],
                 ),
                 vSpace(16),
               ],
-              // Genus badge
-              if (diatom.genus != null)
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 6,
-                  ),
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Colors.blue[300]!,
-                    ),
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: Text(
-                    'Genus ${diatom.genus}',
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.blue[900],
-                    ),
-                  ),
-                ),
-              if (diatom.genus != null) vSpace(16),
               // Description, when the label resolved to a catalogue entry.
               if (diatom.description != null) ...[
                 Text(
@@ -195,7 +189,7 @@ class DetectedDiatomCard extends StatelessWidget {
                 ),
               ),
               vSpace(16),
-              // Additional information. Hidden entirely when the species is not
+              // Additional information. Hidden entirely when the genus is not
               // in the catalogue yet, rather than showing a column of dashes.
               if (diatom.hasDetails) Container(
                 padding: const EdgeInsets.all(12),

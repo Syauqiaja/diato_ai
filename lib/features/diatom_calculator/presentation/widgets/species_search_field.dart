@@ -1,4 +1,3 @@
-import 'package:diato_ai/features/species/presentation/species_detail_screen.dart';
 import 'package:diato_ai/utils/extensions/context_extensions.dart';
 import 'package:flutter/material.dart';
 
@@ -74,14 +73,6 @@ class SpeciesSearchField extends StatelessWidget {
                               ),
                             ),
                           ),
-                          if (species.hasContent)
-                            IconButton(
-                              onPressed: () =>
-                                  SpeciesDetailScreen.push(context, species.id),
-                              icon: const Icon(Icons.info_outline, size: 20),
-                              tooltip: 'Penjelasan ${species.name}',
-                              color: context.colorScheme.primary,
-                            ),
                         ],
                       ),
                     ),

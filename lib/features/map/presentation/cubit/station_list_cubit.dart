@@ -13,11 +13,6 @@ class StationListCubit extends Cubit<StationListState> {
 
   /// Fetch all stations to plot on the map
   Future<void> getStations() async {
-    final previousYear = switch (state) {
-      StationListLoaded(:final selectedYear) => selectedYear,
-      _ => null,
-    };
-
     emit(StationListLoading());
 
     try {
@@ -25,24 +20,12 @@ class StationListCubit extends Cubit<StationListState> {
 
       switch (result) {
         case Success<List<Station>>():
-          final years = result.value.expand((station) => station.years).toSet();
-          emit(StationListLoaded(
-            result.value,
-            selectedYear: years.contains(previousYear) ? previousYear : null,
-          ));
+          emit(StationListLoaded(result.value));
         case Failure<List<Station>>():
           emit(StationListError(result.message));
       }
     } catch (e) {
       emit(StationListError('An unexpected error occurred: $e'));
     }
-  }
-
-  /// Show only the stations with species records in [year]; null shows all.
-  void selectYear(int? year) {
-    final current = state;
-    if (current is! StationListLoaded) return;
-
-    emit(StationListLoaded(current.stations, selectedYear: year));
   }
 }

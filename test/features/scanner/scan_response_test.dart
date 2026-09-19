@@ -5,49 +5,131 @@ import 'package:diato_ai/features/scanner/data/models/scan_response.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 /// The fixture below is a verbatim capture of a real `POST /api/scans`
-/// response, so these tests fail if the backend contract drifts.
+/// response from the genus-level scanner, so these tests fail if the backend
+/// contract drifts.
 const _realResponse = '''
 {
   "status": true,
-  "message": "Diatom identified successfully",
+  "message": "Diatom genus identified successfully",
   "data": {
     "id": 1,
-    "image": "/storage/scans/oE4rTey7VRAGrYTiapumlNYkzyuijZzr1m3uoK3Q.jpg",
+    "image": "/storage/scans/YsRgxpOOHrbp0TKVsrYFHCRa3Rdt7lbFbSGizpa1.jpg",
     "status": "completed",
     "error_message": null,
-    "model_version": "mobilenetv3_large_100-20260901",
+    "model_version": "mobilenetv3_large_100-20260919",
     "inference_ms": 80,
     "station_id": null,
     "results": [
       {
-        "rank": 2,
-        "label": "Cocconeis_euglypta",
-        "confidence": 0.3525,
+        "rank": 1,
+        "label": "Cocconeis",
+        "confidence": 0.6449,
+        "taxon_rank": "genus",
         "species": {
-          "id": 1, "slug": "Cocconeis_euglypta",
-          "scientific_name": "Cocconeis euglypta", "genus": "Cocconeis",
-          "description": null, "habitat": null, "size_range": null,
-          "shape": null, "image": null
+          "id": 1,
+          "slug": "Cocconeis",
+          "scientific_name": "Cocconeis",
+          "authority": null,
+          "genus": "Cocconeis",
+          "common_name": null,
+          "description": "Valves are elliptic.",
+          "habitat": "Benthic",
+          "size_range": "9-68 um",
+          "shape": null,
+          "image": "/storage/species/cocconeis.jpg",
+          "source_url": null,
+          "credit": null
         },
-        "scientific_name": "Cocconeis euglypta",
-        "description": null, "habitat": null, "size_range": null, "shape": null
+        "genus_species": [
+          {
+            "id": 1,
+            "name": "Cocconeis placentula",
+            "image": null,
+            "content_title": null,
+            "has_content": false,
+            "sensitivity": 5,
+            "indicator": 3,
+            "scannable_species_id": 1
+          }
+        ],
+        "catalogue_species": {
+          "id": 1,
+          "name": "Cocconeis placentula",
+          "image": null,
+          "content_title": null,
+          "has_content": false,
+          "sensitivity": 5,
+          "indicator": 3,
+          "scannable_species_id": 1
+        },
+        "scientific_name": "Cocconeis",
+        "display_name": "Cocconeis",
+        "description": "Valves are elliptic.",
+        "habitat": "Benthic",
+        "size_range": "9-68 um",
+        "shape": null
       },
       {
-        "rank": 1,
-        "label": "Cocconeis_placentula",
-        "confidence": 0.6449,
+        "rank": 2,
+        "label": "Navicula",
+        "confidence": 0.2771,
+        "taxon_rank": "genus",
         "species": {
-          "id": 3, "slug": "Cocconeis_placentula",
-          "scientific_name": "Cocconeis placentula", "genus": "Cocconeis",
-          "description": "Valves are elliptic.", "habitat": "Benthic",
-          "size_range": "9-68 um", "shape": null, "image": "/storage/species/cp.jpg"
+          "id": 2,
+          "slug": "Navicula",
+          "scientific_name": "Navicula",
+          "authority": null,
+          "genus": "Navicula",
+          "common_name": null,
+          "description": null,
+          "habitat": null,
+          "size_range": null,
+          "shape": null,
+          "image": null,
+          "source_url": null,
+          "credit": null
         },
-        "scientific_name": "Cocconeis placentula",
-        "description": "Valves are elliptic.", "habitat": "Benthic",
-        "size_range": "9-68 um", "shape": null
+        "genus_species": [
+          {
+            "id": 2,
+            "name": "Navicula cryptocephala",
+            "image": null,
+            "content_title": null,
+            "has_content": false,
+            "sensitivity": 4,
+            "indicator": 3,
+            "scannable_species_id": 2
+          },
+          {
+            "id": 11,
+            "name": "Navicula rhynchocephala",
+            "image": null,
+            "content_title": null,
+            "has_content": false,
+            "sensitivity": null,
+            "indicator": null,
+            "scannable_species_id": 2
+          }
+        ],
+        "catalogue_species": {
+          "id": 2,
+          "name": "Navicula cryptocephala",
+          "image": null,
+          "content_title": null,
+          "has_content": false,
+          "sensitivity": 4,
+          "indicator": 3,
+          "scannable_species_id": 2
+        },
+        "scientific_name": "Navicula",
+        "display_name": "Navicula",
+        "description": null,
+        "habitat": null,
+        "size_range": null,
+        "shape": null
       }
     ],
-    "created_at": "2026-09-01T14:34:39.000000Z"
+    "created_at": "2026-09-19T07:50:48.000000Z"
   }
 }
 ''';
@@ -64,7 +146,7 @@ void main() {
     test('parses the scan envelope', () {
       expect(scan.id, 1);
       expect(scan.status, 'completed');
-      expect(scan.modelVersion, 'mobilenetv3_large_100-20260901');
+      expect(scan.modelVersion, 'mobilenetv3_large_100-20260919');
       expect(scan.inferenceMs, 80);
       expect(scan.createdAt, isNotNull);
     });
@@ -75,35 +157,48 @@ void main() {
     });
 
     test('orders results by rank regardless of array order', () {
-      // The fixture deliberately lists rank 2 before rank 1.
-      expect(scan.results.map((r) => r.rank), [1, 2]);
-      expect(scan.topResult?.species, 'Cocconeis placentula');
-      expect(scan.alternatives.single.species, 'Cocconeis euglypta');
+      final body = jsonDecode(_realResponse) as Map<String, dynamic>;
+      final data = body['data'] as Map<String, dynamic>;
+      data['results'] = (data['results'] as List<dynamic>).reversed.toList();
+      final reversed = ScanResponse.fromJson(data);
+
+      expect(reversed.results.map((r) => r.rank), [1, 2]);
+      expect(reversed.topResult?.name, 'Cocconeis');
+      expect(reversed.alternatives.single.name, 'Navicula');
     });
 
-    test('flattens species detail onto the result', () {
+    test('names the result by genus and flattens its detail', () {
       final top = scan.topResult!;
-      expect(top.label, 'Cocconeis_placentula');
+      expect(top.label, 'Cocconeis');
+      expect(top.name, 'Cocconeis');
+      expect(top.taxonRank, 'genus');
       expect(top.confidence, closeTo(0.6449, 1e-6));
       expect(top.confidencePercent, 64);
-      expect(top.genus, 'Cocconeis');
       expect(top.habitat, 'Benthic');
       expect(top.hasDetails, isTrue);
       expect(top.imageUrl, startsWith('https://'));
     });
 
-    test('tolerates a species with no catalogue entry', () {
+    test('lists the catalogue species in each genus', () {
+      expect(scan.topResult!.genusSpecies.map((s) => s.name), ['Cocconeis placentula']);
+      final navicula = scan.alternatives.single;
+      expect(navicula.genusSpecies.map((s) => s.id), [2, 11]);
+      expect(navicula.genusSpecies.first.name, 'Navicula cryptocephala');
+    });
+
+    test('tolerates a genus with no catalogue entry', () {
       final diatom = DetectedDiatom.fromJson({
         'rank': 1,
-        'label': 'Navicula_nowhere',
+        'label': 'Nowhereia',
         'confidence': 0.42,
         'species': null,
-        'scientific_name': 'Navicula nowhere',
+        'genus_species': <dynamic>[],
+        'scientific_name': 'Nowhereia',
       });
 
-      expect(diatom.species, 'Navicula nowhere');
+      expect(diatom.name, 'Nowhereia');
       expect(diatom.hasDetails, isFalse);
-      expect(diatom.genus, isNull);
+      expect(diatom.genusSpecies, isEmpty);
       expect(diatom.imageUrl, isNull);
     });
 
@@ -114,7 +209,9 @@ void main() {
         'confidence': 0.9,
       });
 
-      expect(diatom.species, 'Cocconeis placentula');
+      // A species-era label on an old scan still reads cleanly.
+      expect(diatom.name, 'Cocconeis placentula');
+      expect(diatom.genusSpecies, isEmpty);
     });
 
     test('carries the low-confidence flag through', () {
