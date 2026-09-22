@@ -14,21 +14,28 @@ class ScanResponse {
   final List<DetectedDiatom> results;
 
   /// True when the top candidate cleared the model's confidence threshold.
-  /// The backend sets this from the `message` it returns; a low-confidence
-  /// answer must be shown as "no confident match", not as an identification.
+  /// A low-confidence answer must be shown as "no confident match", not as an
+  /// identification.
   final bool isConfident;
+
+  /// False when the model found no diatom in the photo at all (a face, a room,
+  /// an empty field of view). [results] is then empty.
+  final bool isDiatom;
 
   const ScanResponse({
     required this.id,
     required this.status,
     required this.results,
     required this.isConfident,
+    this.isDiatom = true,
     this.imageUrl,
     this.modelVersion,
     this.inferenceMs,
     this.createdAt,
   });
 
+  /// [isConfident] is the fallback for scans made before the backend stored
+  /// `is_confident`, which leave the field null.
   factory ScanResponse.fromJson(
     Map<String, dynamic> json, {
     bool isConfident = true,
@@ -46,7 +53,8 @@ class ScanResponse {
       inferenceMs: (json['inference_ms'] as num?)?.toInt(),
       createdAt: DateTime.tryParse(json['created_at'] as String? ?? ''),
       results: results,
-      isConfident: isConfident,
+      isConfident: json['is_confident'] as bool? ?? isConfident,
+      isDiatom: json['is_diatom'] as bool? ?? true,
     );
   }
 

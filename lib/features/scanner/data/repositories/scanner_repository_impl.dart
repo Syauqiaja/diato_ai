@@ -35,12 +35,11 @@ final class ScannerRepositoryImpl extends ScannerRepository {
         return Result.failure(body['message'] ?? 'Gagal memproses hasil scan');
       }
 
-      // The backend reports a below-threshold result with status true but a
-      // different message. Carry that through so the UI can say "no confident
-      // match" instead of presenting a shaky guess as fact.
+      // Older backends only signal a below-threshold result through the
+      // message; newer ones send `is_confident`, which fromJson prefers.
       final confident = (body['message'] as String? ?? '')
           .toLowerCase()
-          .startsWith('diatom identified');
+          .startsWith('diatom genus identified');
 
       return Result.success(ScanResponse.fromJson(data, isConfident: confident));
     } on DioException catch (e) {

@@ -218,23 +218,13 @@ class _Results extends StatelessWidget {
           _CapturedImage(path: path, remoteUrl: scan.imageUrl),
           vSpace(16),
 
-          if (results.isEmpty)
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 32),
-              child: Column(
-                children: [
-                  Icon(Icons.search_off, size: 48, color: Colors.grey[400]),
-                  vSpace(12),
-                  Text(
-                    'Tidak ada diatom yang terdeteksi pada gambar ini.',
-                    textAlign: TextAlign.center,
-                    style: context.textTheme.bodyMedium
-                        ?.copyWith(color: Colors.grey[600]),
-                  ),
-                ],
-              ),
-            )
-          else
+          if (!scan.isDiatom || results.isEmpty)
+            const _NoDiatom()
+          else ...[
+            if (!scan.isConfident) ...[
+              const _LowConfidenceNotice(),
+              vSpace(12),
+            ],
             ...results.asMap().entries.map(
                   (entry) => Column(
                     children: [
@@ -246,6 +236,7 @@ class _Results extends StatelessWidget {
                     ],
                   ),
                 ),
+          ],
 
           if (scan.modelVersion != null) ...[
             vSpace(20),
@@ -257,6 +248,63 @@ class _Results extends StatelessWidget {
             ),
           ],
           vSpace(16),
+        ],
+      ),
+    );
+  }
+}
+
+class _NoDiatom extends StatelessWidget {
+  const _NoDiatom();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 32),
+      child: Column(
+        children: [
+          Icon(Icons.search_off, size: 48, color: Colors.grey[400]),
+          vSpace(12),
+          Text(
+            'Tidak ada diatom yang terdeteksi pada gambar ini.',
+            textAlign: TextAlign.center,
+            style: context.textTheme.bodyMedium?.copyWith(color: Colors.grey[600]),
+          ),
+          vSpace(6),
+          Text(
+            'Pastikan preparat berada di bawah lensa dan gambar tajam, '
+            'lalu coba scan lagi.',
+            textAlign: TextAlign.center,
+            style: context.textTheme.bodySmall?.copyWith(color: Colors.grey[500]),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _LowConfidenceNotice extends StatelessWidget {
+  const _LowConfidenceNotice();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.amber[50],
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.amber.shade200),
+      ),
+      child: Row(
+        children: [
+          Icon(Icons.info_outline, size: 20, color: Colors.amber[800]),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              'Model belum yakin. Berikut kandidat genus terdekat.',
+              style: context.textTheme.bodySmall?.copyWith(color: Colors.amber[900]),
+            ),
+          ),
         ],
       ),
     );

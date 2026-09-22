@@ -235,5 +235,34 @@ void main() {
       expect(empty.topResult, isNull);
       expect(empty.alternatives, isEmpty);
     });
+
+    test('reads the diatom and confidence flags from the scan', () {
+      final notDiatom = ScanResponse.fromJson({
+        'id': 10,
+        'status': 'completed',
+        'is_diatom': false,
+        'is_confident': false,
+        'results': <dynamic>[],
+      });
+
+      expect(notDiatom.isDiatom, isFalse);
+      expect(notDiatom.isConfident, isFalse);
+    });
+
+    test('a stored flag wins over the message-based fallback', () {
+      final scan = ScanResponse.fromJson(
+        {'id': 11, 'status': 'completed', 'is_confident': true, 'results': <dynamic>[]},
+        isConfident: false,
+      );
+
+      expect(scan.isConfident, isTrue);
+    });
+
+    test('scans from before the reject class count as diatoms', () {
+      final body = jsonDecode(_realResponse) as Map<String, dynamic>;
+      final old = ScanResponse.fromJson(body['data'] as Map<String, dynamic>);
+
+      expect(old.isDiatom, isTrue);
+    });
   });
 }
