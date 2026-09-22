@@ -218,51 +218,6 @@ class _Results extends StatelessWidget {
           _CapturedImage(path: path, remoteUrl: scan.imageUrl),
           vSpace(16),
 
-          // The model thresholds its own output: below the cut-off it reports
-          // "unknown" rather than a genus. Surfacing that honestly matters
-          // more than showing a confident-looking name.
-          if (!scan.isConfident) ...[
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: Colors.orange.withValues(alpha: 0.12),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.orange.withValues(alpha: 0.4)),
-              ),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Icon(Icons.help_outline, color: Colors.orange[800], size: 20),
-                  hSpace(10),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Tidak ada kecocokan yang meyakinkan',
-                          style: context.textTheme.bodyMedium?.copyWith(
-                            fontWeight: FontWeight.w600,
-                            color: Colors.orange[900],
-                          ),
-                        ),
-                        vSpace(4),
-                        Text(
-                          'Genus ini mungkin belum ada dalam model, atau '
-                          'gambarnya kurang jelas. Kandidat terdekat '
-                          'ditampilkan di bawah sebagai perkiraan.',
-                          style: context.textTheme.bodySmall?.copyWith(
-                            color: Colors.orange[900],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            vSpace(16),
-          ],
-
           if (results.isEmpty)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 32),

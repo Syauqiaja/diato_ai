@@ -1,8 +1,9 @@
 import 'package:camera/camera.dart';
 import 'package:diato_ai/core/theme/theme.dart';
 import 'package:diato_ai/features/scanner/presentation/scanner_detail_screen.dart';
-import 'package:diato_ai/features/scanner/presentation/widgets/scanner_bottom_app_bar.dart';
+import 'package:diato_ai/features/scanner/presentation/widgets/scanner_camera_controls.dart';
 import 'package:diato_ai/features/scanner/presentation/widgets/scanner_camera_section.dart';
+import 'package:diato_ai/features/scanner/presentation/widgets/scanner_guide_dialog.dart';
 import 'package:diato_ai/features/scanner/presentation/widgets/scanner_top_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -168,12 +169,14 @@ class _ScannerScreenState extends State<ScannerScreen> {
               },
             ),
             ScannerTopAppBar(),
-            ScannerBottomAppBar(
+            ScannerCameraControls(
               onRotateCamera: _rotateCamera,
               onToggleFlash: _toggleFlash,
               onCapture: _onCapture,
               onPickFromGallery: _onPickFromGallery,
+              onInfo: () => ScannerGuideDialog.show(context),
               flashMode: _flashMode,
+              isCapturing: _isCapturing,
             ),
           ],
         ),
