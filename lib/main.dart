@@ -38,7 +38,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => StationListCubit(getIt())),
         BlocProvider(create: (context) => StationDetailCubit(getIt())),
       ],
-      child: MaterialApp.router(title: 'Diato AI', theme: AppTheme.lightTheme, routerConfig: AppRoutes.router, debugShowCheckedModeBanner: false),
+      child: MaterialApp.router(title: 'Diatom-AI', theme: AppTheme.lightTheme, routerConfig: AppRoutes.router, debugShowCheckedModeBanner: false),
     );
   }
 }

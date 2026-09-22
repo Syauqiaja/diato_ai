@@ -188,6 +188,31 @@ class _ExploreScreenState extends State<ExploreScreen> {
     );
   }
 
+  /// Families under a banner: the first entry is not a family but the summary
+  /// of every species found, so it leads the list on its own.
+  Widget _familiesSection(BuildContext context, ContentSection section) {
+    if (section.isLoading) {
+      return _skeletonList(2);
+    }
+
+    if (section.items.isEmpty) {
+      return SizedBox.shrink();
+    }
+
+    final families = section.items.skip(1).toList();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _SummaryBanner(item: section.items.first),
+        for (final family in families) ...[
+          vSpace(12),
+          _ListItem(item: family, subtitle: 'Famili'),
+        ],
+      ],
+    );
+  }
+
   Widget _skeletonList(int count) {
     return ListView.separated(
       shrinkWrap: true,
@@ -235,7 +260,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
       ],
       _sectionTitle(context, 'Diatom di Sungai Brantas'),
       vSpace(16),
-      _verticalSection(context, families, subtitle: (number) => 'Famili'),
+      _familiesSection(context, families),
     ];
   }
 
@@ -340,6 +365,105 @@ class _CourseCard extends StatelessWidget {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+/// The summary that heads the families: its cover full width, with the title
+/// and a call to open it underneath.
+class _SummaryBanner extends StatelessWidget {
+  final ContentItem item;
+  const _SummaryBanner({required this.item});
+
+  @override
+  Widget build(BuildContext context) {
+    final primary = context.colorScheme.primary;
+
+    return Material(
+      color: AppTheme.canvasColor,
+      borderRadius: BorderRadius.circular(20),
+      clipBehavior: Clip.antiAlias,
+      elevation: 2,
+      shadowColor: AppTheme.primaryColor.withValues(alpha: 0.25),
+      child: InkWell(
+        onTap: () => ContentDetailScreen.push(context, item.id),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Stack(
+              children: [
+                AspectRatio(aspectRatio: 2.1, child: _Cover(url: item.cover)),
+                Positioned(
+                  top: 12,
+                  right: 12,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: AppTheme.secondaryColor,
+                      borderRadius: BorderRadius.circular(999),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.auto_awesome, size: 14, color: AppTheme.primaryColor),
+                        hSpace(4),
+                        Text(
+                          'Ringkasan',
+                          style: context.textTheme.labelSmall?.copyWith(
+                            color: AppTheme.primaryColor,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            Container(
+              height: 4,
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(colors: [AppTheme.secondaryColor, AppTheme.tertiaryColor]),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 14, 12, 16),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          item.title,
+                          maxLines: 3,
+                          overflow: TextOverflow.ellipsis,
+                          style: context.textTheme.titleMedium?.copyWith(
+                            color: primary,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        vSpace(4),
+                        Text(
+                          'Semua spesies yang ditemukan',
+                          style: context.textTheme.bodySmall?.copyWith(color: primary.withValues(alpha: 0.6)),
+                        ),
+                      ],
+                    ),
+                  ),
+                  hSpace(12),
+                  Container(
+                    width: 40,
+                    height: 40,
+                    decoration: const BoxDecoration(color: AppTheme.primaryColor, shape: BoxShape.circle),
+                    child: const Icon(Icons.arrow_forward, size: 20, color: Colors.white),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
