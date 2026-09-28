@@ -1,4 +1,4 @@
-package com.example.diato_ai
+package com.diato.diatoAi
 
 import io.flutter.embedding.android.FlutterActivity
 
