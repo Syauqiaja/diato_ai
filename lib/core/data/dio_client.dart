@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:diato_ai/core/device/device_installation_id.dart';
-import 'package:diato_ai/features/auth/core/auth_core.dart';
 import 'package:get_it/get_it.dart';
 
 /// A configured Dio client for making HTTP requests.
@@ -31,24 +30,11 @@ class DioClient {
       ),
     );
 
-    // Attach the stored bearer token to every request.
-    //
-    // Without this the token saved at login is never sent, so any endpoint
-    // behind `auth:sanctum` — including POST /scans — answers 401.
     dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) async {
-          // Resolved lazily: AuthCore is registered after Dio in the DI setup.
-          if (GetIt.instance.isRegistered<AuthCore>()) {
-            final token = await GetIt.instance<AuthCore>().getToken();
-            if (token != null && token.isNotEmpty) {
-              options.headers['Authorization'] = 'Bearer $token';
-            }
-          }
-
-          // Identify the installation for endpoints that belong to a device
-          // rather than an account — saved calculator readings are kept per
-          // device because the calculator never asks anyone to sign in.
+          // Identify the installation: the app has no accounts, so data such
+          // as saved calculator readings is kept per device.
           if (GetIt.instance.isRegistered<DeviceInstallationId>()) {
             options.headers['X-Device-Id'] =
                 await GetIt.instance<DeviceInstallationId>().get();

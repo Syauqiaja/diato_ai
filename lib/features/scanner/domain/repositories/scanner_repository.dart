@@ -5,6 +5,6 @@ abstract class ScannerRepository {
   /// Upload a photo and identify the diatom in it.
   Future<Result<ScanResponse>> identify(String imagePath);
 
-  /// The signed-in user's previous scans, newest first.
+  /// Previous scans, newest first.
   Future<Result<List<ScanResponse>>> history();
 }

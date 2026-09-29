@@ -46,13 +46,8 @@ dependencies:
   shared_preferences: ^2.5.4
   equatable: ^2.0.8
   get_it: ^9.2.0
-  firebase_core: ^4.4.0
-  firebase_auth: ^6.1.4
-  google_sign_in: ^7.2.0
-  google_one_tap_sign_in: ^1.0.8
   url_launcher: ^6.3.2
   mocktail: ^1.0.4
-  firebase_auth_mocks: ^0.15.1
   flutter_widget_from_html: ^0.17.1
   youtube_player_iframe: ^5.2.1
   easy_image_viewer: ^1.5.1
@@ -75,6 +70,8 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^5.0.0
   flutter_launcher_icons: ^0.14.4
+  integration_test:
+    sdk: flutter
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

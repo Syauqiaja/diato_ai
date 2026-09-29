@@ -1,8 +1,6 @@
 import 'package:diato_ai/features/diatom_calculator/presentation/diatom_calculator_screen.dart';
 import 'package:diato_ai/features/diatom_calculator/presentation/saved_calculations_screen.dart';
 import 'package:diato_ai/features/app_layout/app_layout.dart';
-import 'package:diato_ai/features/auth/login/presentation/login_screen.dart';
-import 'package:diato_ai/features/auth/register/presentation/register_screen.dart';
 import 'package:diato_ai/features/explore/presentation/explore_screen.dart';
 import 'package:diato_ai/features/contents/presentation/content_detail_screen.dart';
 import 'package:diato_ai/features/home/presentation/home_screen.dart';
@@ -74,8 +72,6 @@ class AppRoutes {
           ),
         ],
       ),
-      GoRoute(path: LoginScreen.routePath, name: LoginScreen.routeName, builder: (context, state) => LoginScreen()),
-      GoRoute(path: RegisterScreen.routePath, name: RegisterScreen.routeName, builder: (context, state) => RegisterScreen()),
       GoRoute(
         path: ContentDetailScreen.routePath,
         name: ContentDetailScreen.routeName,

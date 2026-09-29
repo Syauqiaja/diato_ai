@@ -82,7 +82,6 @@ final class ScannerRepositoryImpl extends ScannerRepository {
       final message = data is Map<String, dynamic> ? data['message'] as String? : null;
 
       return switch (response.statusCode) {
-        401 => 'Sesi kamu sudah berakhir. Silakan masuk lagi.',
         // The Laravel controller answers 503 when the CNN service is down.
         503 => message ?? 'Layanan identifikasi sedang tidak tersedia.',
         422 => message ?? 'Gambar tidak valid. Gunakan foto JPG atau PNG.',

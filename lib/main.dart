@@ -1,22 +1,18 @@
 import 'package:diato_ai/features/species/presentation/cubit/species_detail_cubit.dart';
 import 'package:diato_ai/core/routes/route.dart';
 import 'package:diato_ai/core/theme/theme.dart';
-import 'package:diato_ai/features/auth/core/cubit/auth_cubit.dart';
 import 'package:diato_ai/features/contents/presentation/cubit/content_detail_cubit.dart';
 import 'package:diato_ai/features/contents/presentation/cubit/content_list_cubit.dart';
 import 'package:diato_ai/features/contents/presentation/cubit/content_search_cubit.dart';
 import 'package:diato_ai/features/home/presentation/cubit/article_cubit.dart';
 import 'package:diato_ai/features/map/presentation/cubit/station_detail_cubit.dart';
 import 'package:diato_ai/features/map/presentation/cubit/station_list_cubit.dart';
-import 'package:diato_ai/firebase_options.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'core/di/injection.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await setupInjection();
 
   runApp(const MyApp());
@@ -29,7 +25,6 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (context) => AuthCubit(getIt(), getIt(), getIt())..checkAuthStatus()),
         BlocProvider(create: (context) => ArticleCubit(getIt())..getArticles()),
         BlocProvider(create: (context) => ContentListCubit(getIt())),
         BlocProvider(create: (context) => ContentDetailCubit(getIt())),

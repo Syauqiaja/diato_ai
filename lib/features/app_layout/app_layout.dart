@@ -17,15 +17,19 @@ class AppLayout extends StatefulWidget {
 class _AppLayoutState extends State<AppLayout> {
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      top: false,
-      child: Stack(
-        children: [
-          Positioned.fill(child: widget.child),
-          Positioned(
-            left: 0,
-            right: 0,
-            bottom: 8,
+    // Screens fill the whole display; only the nav bar is lifted above the
+    // home indicator, so the inset area shows the screen's own background.
+    return Stack(
+      children: [
+        Positioned.fill(child: widget.child),
+        Positioned(
+          left: 0,
+          right: 0,
+          bottom: 8 + MediaQuery.paddingOf(context).bottom,
+          // The inset is already applied above; stop the bar applying it again.
+          child: MediaQuery.removePadding(
+            context: context,
+            removeBottom: true,
             child: Container(
               height: 64,
               padding: EdgeInsets.only(top: 12),
@@ -46,10 +50,7 @@ class _AppLayoutState extends State<AppLayout> {
                     borderRadius: BorderRadius.circular(32),
                   ),
                   clipBehavior: Clip.hardEdge,
-                  margin: const EdgeInsets.only(
-                    left: 8,
-                    right: 8,
-                  ),
+                  margin: const EdgeInsets.only(left: 8, right: 8),
                   child: CustomBottomAppBar(
                     shape: const CircularNotchedRectangle(),
                     notchMargin: 8,
@@ -57,9 +58,7 @@ class _AppLayoutState extends State<AppLayout> {
                     color: context.colorScheme.primary,
                     elevation: 8,
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 4,
-                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 4),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
@@ -96,8 +95,8 @@ class _AppLayoutState extends State<AppLayout> {
               ),
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
@@ -134,10 +133,7 @@ class _AppLayoutState extends State<AppLayout> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Camera permission is required to scan diatoms'),
-            action: SnackBarAction(
-              label: 'Retry',
-              onPressed: _onScanTapped,
-            ),
+            action: SnackBarAction(label: 'Retry', onPressed: _onScanTapped),
           ),
         );
       }
