@@ -1,3 +1,4 @@
+import 'package:diato_ai/features/contents/presentation/content_detail_screen.dart';
 import 'package:diato_ai/features/scanner/data/models/detected_diatom.dart';
 import 'package:diato_ai/features/shared/widgets/spacings.dart';
 import 'package:diato_ai/features/species/presentation/species_detail_screen.dart';
@@ -98,6 +99,20 @@ class DetectedDiatomCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               vSpace(8),
+              // Families sit above genera, so several genera open the same
+              // family write-up.
+              if (diatom.family case final family?) ...[
+                SizedBox(
+                  width: double.infinity,
+                  child: FilledButton.tonalIcon(
+                    icon: const Icon(Icons.school_outlined),
+                    label: Text('Pelajari Famili ${family.title}'),
+                    onPressed: () =>
+                        ContentDetailScreen.push(context, family.id),
+                  ),
+                ),
+                vSpace(16),
+              ],
               // The model names the genus; the species filed under it in the
               // catalogue are listed so each explanation is one tap away.
               if (diatom.genusSpecies.isNotEmpty) ...[

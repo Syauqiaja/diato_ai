@@ -1,4 +1,5 @@
 import 'package:diato_ai/core/assets/constants.dart';
+import 'package:diato_ai/features/contents/data/models/content_item.dart';
 import 'package:diato_ai/features/species/data/models/species_summary.dart';
 
 /// One candidate identification returned by the CNN, ranked by confidence.
@@ -31,6 +32,10 @@ class DetectedDiatom {
   /// Catalogue species in this genus, each with an explanation to open.
   final List<SpeciesSummary> genusSpecies;
 
+  /// The family write-up this genus is filed under; null until one is
+  /// assigned in the console.
+  final ContentItem? family;
+
   const DetectedDiatom({
     required this.label,
     required this.name,
@@ -43,10 +48,12 @@ class DetectedDiatom {
     this.shape,
     this.imageUrl,
     this.genusSpecies = const [],
+    this.family,
   });
 
   factory DetectedDiatom.fromJson(Map<String, dynamic> json) {
     final genus = json['species'] as Map<String, dynamic>?;
+    final family = json['family'] as Map<String, dynamic>?;
 
     return DetectedDiatom(
       label: json['label'] as String? ?? '',
@@ -66,6 +73,7 @@ class DetectedDiatom {
       genusSpecies: (json['genus_species'] as List<dynamic>? ?? const [])
           .map((e) => SpeciesSummary.fromJson(e as Map<String, dynamic>))
           .toList(),
+      family: family == null ? null : ContentItem.fromJson(family),
     );
   }
 

@@ -202,6 +202,26 @@ void main() {
       expect(diatom.imageUrl, isNull);
     });
 
+    test('carries the family the genus is filed under', () {
+      final diatom = DetectedDiatom.fromJson({
+        'rank': 1,
+        'label': 'Navicula',
+        'confidence': 0.8,
+        'family': {
+          'id': 11,
+          'type': 'family',
+          'title': 'Famili Naviculaceae',
+          'cover': null,
+          'order': 1,
+        },
+      });
+
+      expect(diatom.family?.id, 11);
+      expect(diatom.family?.title, 'Famili Naviculaceae');
+      // Backends from before the family link send no key at all.
+      expect(scan.topResult!.family, isNull);
+    });
+
     test('falls back to a readable name when the backend sends only a label', () {
       final diatom = DetectedDiatom.fromJson({
         'rank': 1,
